@@ -1,0 +1,2 @@
+# ngame_admin
+NgameAdmin
