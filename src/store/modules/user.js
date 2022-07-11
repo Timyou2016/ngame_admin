@@ -5,8 +5,9 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
-    avatar: ''
+    id: 0,
+    nickname: '',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
   }
 }
 
@@ -19,11 +20,16 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_ID: (state, id) => {
+    state.id = id
+  },  
+  SET_NAME: (state, nickname) => {
+    state.nickname = nickname
   },
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+    if (avatar != "") {
+      state.avatar = avatar
+    }
   }
 }
 
@@ -32,9 +38,15 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      const postData = "account="+username.trim()+"&password="+password
+      console.log(postData)
+      login(postData).then(response => {
         const { data } = response
+        console.log(data)
         commit('SET_TOKEN', data.token)
+        commit('SET_ID', data.id)
+        commit('SET_NAME', data.nickname)
+        commit('SET_AVATAR', data.avatar)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -53,9 +65,9 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
+        const {id, nickname, avatar } = data
+        commit('SET_ID', id)
+        commit('SET_NAME', nickname)
         commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
