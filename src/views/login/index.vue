@@ -3,18 +3,18 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">{{ systemTitle }} Login</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="account">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="account"
+          v-model="loginForm.account"
+          placeholder="Account"
+          name="account"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -43,24 +43,20 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('Please enter the correct Account'))
       } else {
         callback()
       }
@@ -74,17 +70,22 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        account: 'admin',
+        password: '123456'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        account: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
       redirect: undefined
     }
+  },
+  computed: {
+    ...mapGetters([
+      'systemTitle'
+    ])
   },
   watch: {
     $route: {
@@ -109,6 +110,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          console.log(this.loginForm)
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
@@ -126,9 +128,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg:#283443;
 $light_gray:#fff;
 $cursor: #fff;

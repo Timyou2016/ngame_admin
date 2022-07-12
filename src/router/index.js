@@ -51,8 +51,44 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard', affix: true }
     }]
+  },
+
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/account/index',
+    name: 'System',
+    meta: { title: '系统管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: '/system/account/list',
+        name: 'AccountList',
+        component: () => import('@/views/account/list'),
+        meta: { title: '账号管理', icon: 'table' ,noCache: true}
+      },      
+      {
+        path: '/system/account/create',
+        name: 'AccountCreate',
+        hidden: true,
+        component: () => import('@/views/account/create'),
+        meta: { title: '编辑账号', icon: 'form' ,noCache: true}
+      },
+      {
+        path: '/system/account/changepwd',
+        name: 'AccountChangePwd',
+        hidden: true,
+        component: () => import('@/views/account/changepwd'),
+        meta: { title: '修改密码', icon: 'form' ,noCache: true}
+      },            
+      {
+        path: '/system/role/index',
+        name: 'RoleList',
+        component: () => import('@/views/role/index'),
+        meta: { title: '角色管理', icon: 'table',noCache: true }
+      },      
+    ]
   },
 
   {

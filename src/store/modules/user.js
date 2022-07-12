@@ -5,8 +5,9 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
-    avatar: ''
+    nickname: '',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    id: 0
   }
 }
 
@@ -19,22 +20,31 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_NAME: (state, nickname) => {
+    state.nickname = nickname
   },
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+    if (avatar !== '') {
+      state.avatar = avatar
+    }
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { account, password } = userInfo
+    console.log(account, password)
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ account: account.trim(), password: password, lang: 'zh_cn' }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_ID', data.id)
+        commit('SET_NAME', data.nickname)
+        commit('SET_AVATAR', data.avatar)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -44,17 +54,15 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
-
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar } = data
-
+        const { id, name, avatar } = data
+        commit('SET_ID', id)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)
@@ -77,7 +85,6 @@ const actions = {
       })
     })
   },
-
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
