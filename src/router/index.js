@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard', affix: true }
+      meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
     }]
   },
 
@@ -74,20 +74,13 @@ export const constantRoutes = [
         hidden: true,
         component: () => import('@/views/account/create'),
         meta: { title: '编辑账号', icon: 'form' ,noCache: true}
-      },
-      {
-        path: '/system/account/changepwd',
-        name: 'AccountChangePwd',
-        hidden: true,
-        component: () => import('@/views/account/changepwd'),
-        meta: { title: '修改密码', icon: 'form' ,noCache: true}
-      },            
+      },           
       {
         path: '/system/role/index',
         name: 'RoleList',
         component: () => import('@/views/role/index'),
         meta: { title: '角色管理', icon: 'table',noCache: true }
-      },      
+      },        
     ]
   },
 

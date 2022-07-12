@@ -8,6 +8,21 @@ export function login(data) {
     data: qs.stringify(data),
   })
 }
+export function useerCreate(data) {
+  return request({
+    url: '/admin/apiv1/user/create',
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}
+
+export function userDelete(data) {
+  return request({
+    url: '/admin/apiv1/user/delete',
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}
 
 export function getInfo(data) {
   return request({

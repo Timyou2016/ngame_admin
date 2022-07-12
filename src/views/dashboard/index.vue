@@ -1,10 +1,6 @@
 <template>
   <div class="dashboard-container">
-<<<<<<< HEAD
     <div class="dashboard-text">NickName: {{ nickname }}</div>
-=======
-    <div class="dashboard-text">nickname: {{ nickname }}</div>
->>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
   </div>
 </template>
 

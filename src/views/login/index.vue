@@ -42,12 +42,6 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
     </el-form>
   </div>
 </template>
@@ -75,11 +69,7 @@ export default {
     }
     return {
       loginForm: {
-<<<<<<< HEAD
         account: 'admin',
-=======
-        username: 'admin',
->>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
         password: '123456'
       },
       loginRules: {
@@ -137,10 +127,6 @@ export default {
 </script>
 
 <style lang="scss">
-<<<<<<< HEAD
-=======
-
->>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
 $bg:#283443;
 $light_gray:#fff;
 $cursor: #fff;

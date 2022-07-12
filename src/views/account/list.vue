@@ -26,7 +26,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="userTable" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -90,7 +90,7 @@
       <el-table-column label="Actions" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">    
       <el-button type="success" icon="el-icon-edit" @click="onCreate(scope.row)" size="mini">编 辑</el-button>
-      <el-button type="primary" icon="el-icon-edit"  @click="onChange(scope.row)" size="mini">变更密码</el-button>
+      <el-button type="primary" icon="el-icon-edit"  @click="onChange(scope.row)" size="mini">修改密码</el-button>
       <el-button type="danger" icon="el-icon-delete" @click="onDelete(scope.row)" size="mini"/>             
         </template>
       </el-table-column>
@@ -123,18 +123,19 @@
         </el-button>
       </div>
     </el-dialog>
+      <changePwd></changePwd>    
   </div>
 </template>
 
 <script>
-import { userList } from '@/api/user'
+import { userList,userDelete } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-
+import {changePwd} from '@/layout/components/Account/changePwd.vue'
 
 export default {
   name: 'ViewAccountList',
-  components: { Pagination },
+  components: { Pagination,changePwd },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -173,7 +174,7 @@ export default {
         account: '',
         nickname: '',
         tel: '',
-        sort: 'id_desc'
+        sort: '-id'
       },
       showReviewer: false,
       temp: {
@@ -207,8 +208,26 @@ export default {
       })
     }, 
     onCreate(row){},
-    onChange(row){},
-    onDelete(row){},
+    onChange(row){
+      this.refs.changePwd.changePwding()
+    },
+    onDelete(row){
+      this.$confirm('确认删除吗?', '', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      })
+        .then(async() => {
+          await userDelete({id:row.id}).then(response => {
+            this.$message({
+              type: 'success',
+              message: 'Delete succed!'
+            })             
+            this.getList()
+          })           
+        })
+        .catch(err => { console.error(err) })
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -222,9 +241,9 @@ export default {
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = 'id_asc'
+        this.listQuery.sort = '+id'
       } else {
-        this.listQuery.sort = 'id_desc'
+        this.listQuery.sort = '-id'
       }
       this.handleFilter()
     },
@@ -235,7 +254,7 @@ export default {
 
     getSortClass: function(key) {
       const sort = this.listQuery.sort
-      return sort === `${key}_asc` ? 'ascending' : 'descending'
+      return sort === `+${key}` ? 'ascending' : 'descending'
     }
   }
 }

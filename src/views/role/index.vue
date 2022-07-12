@@ -10,7 +10,7 @@
       </el-checkbox>
     </div>
     <div class="top-container" style="margin: 5px 10px;">
-      <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="onCreate">
+      <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="onShowForm('create')">
         创建
       </el-button>
     </div>  
@@ -24,59 +24,14 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="roleTable" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="NickName" width="120">
+      <el-table-column label="Name" width="200">
         <template slot-scope="scope">
-          {{ scope.row.nickname }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Account" width="120" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.account }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Role" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.role_id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Department" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.department_id }}</span>
-        </template>
-      </el-table-column>            
-      <el-table-column label="Number" width="80" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.number }}</span>
-        </template>
-      </el-table-column>      
-      <el-table-column label="Email" width="150" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.email }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Wechat" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.wechat }}</span>
-        </template>
-      </el-table-column>    
-      <el-table-column label="Tel" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.tel }}</span>
-        </template>
-      </el-table-column> 
-      <el-table-column v-if="showReviewer" class-name="sex-col" label="Sex" width="60" align="center">
-        <template slot-scope="scope">
-        <span>{{ scope.row.sex | showSex }}</span>
-        </template>
-      </el-table-column>                       
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | showStatus }}</el-tag>
+          {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column v-if="showReviewer" align="center" prop="create_at" label="CreatedAt" width="220">
@@ -87,8 +42,7 @@
 
       <el-table-column label="Actions" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">    
-      <el-button type="success" icon="el-icon-edit" @click="onCreate(scope.row)" size="mini">编 辑</el-button>
-      <el-button type="primary" icon="el-icon-edit"  @click="onChange(scope.row)" size="mini">变更密码</el-button>
+      <el-button type="success" icon="el-icon-edit" @click="onShowForm('update',scope.row)" size="mini">编 辑</el-button>
       <el-button type="danger" icon="el-icon-delete" @click="onDelete(scope.row)" size="mini"/>             
         </template>
       </el-table-column>
@@ -98,25 +52,17 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
+
+        <el-form-item label="角 色" prop="name">
+          <el-input v-model="temp.name" />
         </el-form-item>
 
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           Cancel
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+        <el-button type="primary" @click="onCreate()">
           Confirm
         </el-button>
       </div>
@@ -125,13 +71,13 @@
 </template>
 
 <script>
-import { userList } from '@/api/user'
+import { roleList,roleCreate,roleDelete } from '@/api/role'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 
 export default {
-  name: 'ViewAccountList',
+  name: 'ViewRoleList',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -169,21 +115,21 @@ export default {
         page: 1,
         pageNum: 20,
         name: '',
-        sort: 'id_desc'
+        sort: '-id'
       },
       showReviewer: false,
       temp: {
+        id:0,
+        name:''
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑角色',
+        create: '创建角色'
       },
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        name: [{ required: true, message: '角色名称必填', trigger: 'blur' }]
       },
     }
   },
@@ -193,7 +139,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      userList(this.listQuery).then(response => {
+      roleList(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -202,9 +148,40 @@ export default {
         }, 1.5 * 1000)
       })
     }, 
-    onCreate(row){},
-    onChange(row){},
-    onDelete(row){},
+    onShowForm(ActName,row){
+      this.resetTemp()
+      this.dialogFormVisible = true
+      this.dialogStatus = ActName
+      if(row){
+        this.temp.id = row.id
+        this.temp.name = row.name
+      }
+    },
+    onCreate(){
+      roleCreate(this.temp).then(response => {
+        this.resetTemp()
+        this.dialogFormVisible = false
+        this.getList()
+      })      
+    },
+
+    onDelete(row){
+      this.$confirm('确认删除吗?', '', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      })
+        .then(async() => {
+          await roleDelete({id:row.id}).then(response => {
+            this.$message({
+              type: 'success',
+              message: 'Delete succed!'
+            })             
+            this.getList()
+          })           
+        })
+        .catch(err => { console.error(err) })
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -218,20 +195,22 @@ export default {
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = 'id_asc'
+        this.listQuery.sort = '+id'
       } else {
-        this.listQuery.sort = 'id_desc'
+        this.listQuery.sort = '-id'
       }
       this.handleFilter()
     },
     resetTemp() {
       this.temp = {
+        id:0,
+        name:''        
       }
     },
 
     getSortClass: function(key) {
       const sort = this.listQuery.sort
-      return sort === `${key}_asc` ? 'ascending' : 'descending'
+      return sort === `+${key}` ? 'ascending' : 'descending'
     }
   }
 }
