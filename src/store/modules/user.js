@@ -8,6 +8,7 @@ const getDefaultState = () => {
     nickname: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     id: 0
+
   }
 }
 
@@ -20,6 +21,9 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_ID: (state, id) => {
+    state.id = id
+  },  
   SET_NAME: (state, nickname) => {
     state.nickname = nickname
   },
@@ -28,9 +32,7 @@ const mutations = {
       state.avatar = avatar
     }
   },
-  SET_ID: (state, id) => {
-    state.id = id
-  }
+
 }
 
 const actions = {
@@ -41,6 +43,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ account: account.trim(), password: password, lang: 'zh_cn' }).then(response => {
         const { data } = response
+        console.log(data)
         commit('SET_TOKEN', data.token)
         commit('SET_ID', data.id)
         commit('SET_NAME', data.nickname)
@@ -61,9 +64,9 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-        const { id, name, avatar } = data
+        const {id, nickname, avatar } = data
         commit('SET_ID', id)
-        commit('SET_NAME', name)
+        commit('SET_NAME', nickname)
         commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {

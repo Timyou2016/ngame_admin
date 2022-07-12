@@ -17,7 +17,11 @@
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
+<<<<<<< HEAD
             <span style="display:block;">登出</span>
+=======
+            <span style="display:block;">退出</span>
+>>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

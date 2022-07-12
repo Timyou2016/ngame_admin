@@ -3,7 +3,7 @@ import qs from 'qs';
 
 export function login(data) {
   return request({
-    url: 'admin/apiv1/user/login',
+    url: '/admin/apiv1/user/login',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -11,7 +11,7 @@ export function login(data) {
 
 export function getInfo(data) {
   return request({
-    url: 'admin/apiv1/user/info',
+    url: '/admin/apiv1/user/info',
     method: 'get',
     params: data
   })
@@ -19,7 +19,7 @@ export function getInfo(data) {
 
 export function logout() {
   return request({
-    url: 'admin/apiv1/user/logout',
+    url: '/admin/apiv1/user/logout',
     method: 'post'
   })
 }

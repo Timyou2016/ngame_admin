@@ -30,6 +30,10 @@ export default {
   },  
   data() {
     return {
+<<<<<<< HEAD
+=======
+      title: 'NGame Admin',
+>>>>>>> 7adeb3e7cc3d63ee369d75da9cba4b1d581200a9
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
