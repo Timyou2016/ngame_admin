@@ -21,17 +21,32 @@ export function departmentInfo(data) {
   return request({
     url: '/admin/apiv1/department/info',
     method: 'get',
-    params: data
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
   })
 }
 
 
 export function departmentList(data) {
-  console.log(data)
   return request({
     url: 'admin/apiv1/department/list',
     method: 'get',
-    params: data
-    // data: qs.stringify(data),
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
+  })
+}
+
+export function departmentTree(data) {
+  return request({
+    url: 'admin/apiv1/department/tree',
+    method: 'get',
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
   })
 }

@@ -4,7 +4,8 @@
       <el-input v-model="listQuery.account" placeholder="Account" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nickname" placeholder="Nickname" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.tel" placeholder="Tel" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <select-role ref="refSelectRole" @changeSelect="selectRole"></select-role>
+      <select-role ref="refSelectRole" @changeSelect="selectRole" style="display:inline-block;margin-right:10px;"></select-role>
+      <select-department ref="refSelectDepartment"  style="display:inline-block;margin-right:10px;"></select-department>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -42,12 +43,12 @@
           <span>{{ scope.row.account }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Role" width="110" align="center">
+      <el-table-column v-if="showReviewer" label="Role" width="110" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.role_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Department" width="110" align="center">
+      <el-table-column v-if="showReviewer" label="Department" width="110" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.department_id }}</span>
         </template>
@@ -134,10 +135,10 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import ChangePwd from '@/layout/components/Account/changePwd'
 import SelectRole from '@/layout/components/Account/selectRole'
-
+import SelectDepartment from '@/layout/components/Account/selectDepartment'
 export default {
   name: 'AccountList',
-  components: { Pagination,ChangePwd ,SelectRole},
+  components: { Pagination,ChangePwd ,SelectRole ,SelectDepartment},
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -202,6 +203,9 @@ export default {
     selectRole(e){
       console.log(e)
       this.listQuery.roles = e
+    },
+    selectDepartment(e){
+      
     },
     getList() {
       this.listLoading = true

@@ -21,7 +21,10 @@ export function roleInfo(data) {
   return request({
     url: '/admin/apiv1/role/info',
     method: 'get',
-    params: data
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
   })
 }
 
@@ -38,7 +41,9 @@ export function roleList(data) {
   return request({
     url: 'admin/apiv1/role/list',
     method: 'get',
-    params: data
-    // data: qs.stringify(data),
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
   })
 }

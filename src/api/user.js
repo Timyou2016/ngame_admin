@@ -36,7 +36,10 @@ export function getInfo(data) {
   return request({
     url: '/admin/apiv1/user/info',
     method: 'get',
-    params: data
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
   })
 }
 
@@ -52,7 +55,10 @@ export function userList(data) {
   return request({
     url: 'admin/apiv1/user/list',
     method: 'get',
-    params: data
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
     // data: qs.stringify(data),
   })
 }
