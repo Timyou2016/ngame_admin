@@ -80,7 +80,13 @@ export const constantRoutes = [
         name: 'RoleList',
         component: () => import('@/views/role/index'),
         meta: { title: '角色管理', icon: 'table',noCache: true }
-      },        
+      },  
+      {
+        path: '/system/department/index',
+        name: 'DepartmentList',
+        component: () => import('@/views/department/index'),
+        meta: { title: '部门管理', icon: 'table',noCache: true }
+      }              
     ]
   },
 

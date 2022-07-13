@@ -109,8 +109,14 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          console.log(this.loginForm)
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          let params
+          params = {
+            account:this.loginForm.account,
+            password:this.loginForm.password
+          }
+          params.password = this.$md5(params.password).toUpperCase()
+          console.log(params,this.loginForm)
+          this.$store.dispatch('user/login', params).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {

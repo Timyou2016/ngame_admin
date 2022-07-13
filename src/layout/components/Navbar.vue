@@ -16,12 +16,16 @@
               Dashboard
             </el-dropdown-item>
           </router-link>
+          <el-dropdown-item divided @click.native="onChangePwd">
+            <span style="display:block;">修改密码</span>
+          </el-dropdown-item>          
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <change-pwd ref="refChangePwd"></change-pwd>
   </div>
 </template>
 
@@ -29,11 +33,12 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import ChangePwd from '@/layout/components/Account/changePwd'
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ChangePwd
   },
   computed: {
     ...mapGetters([
@@ -48,7 +53,10 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+    },
+    onChangePwd(){
+      this.$refs.refChangePwd.changePwding({},true,'')
+    },    
   }
 }
 </script>

@@ -24,7 +24,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="roleTable" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="departmentTable" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -53,7 +53,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="120px" style="width: 450px; margin-left:50px;">
 
-        <el-form-item label="角 色" prop="name">
+        <el-form-item label="部门名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
 
@@ -71,13 +71,13 @@
 </template>
 
 <script>
-import { roleList,roleCreate,roleDelete } from '@/api/role'
+import { departmentList,departmentCreate,departmentDelete } from '@/api/department'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 
 export default {
-  name: 'RoleList',
+  name: 'DepartmentList',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -139,7 +139,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      roleList(this.listQuery).then(response => {
+      departmentList(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -158,7 +158,7 @@ export default {
       }
     },
     onCreate(){
-      roleCreate(this.temp).then(response => {
+      departmentCreate(this.temp).then(response => {
         this.resetTemp()
         this.dialogFormVisible = false
         this.getList()
@@ -172,7 +172,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          await roleDelete({id:row.id}).then(response => {
+          await departmentDelete({id:row.id}).then(response => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'

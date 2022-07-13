@@ -8,9 +8,17 @@ export function login(data) {
     data: qs.stringify(data),
   })
 }
-export function useerCreate(data) {
+export function userCreate(data) {
   return request({
     url: '/admin/apiv1/user/create',
+    method: 'post',
+    data: qs.stringify(data),
+  })
+}
+
+export function userChangePwd(data) {
+  return request({
+    url: '/admin/apiv1/user/changePwd',
     method: 'post',
     data: qs.stringify(data),
   })

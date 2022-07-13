@@ -4,6 +4,7 @@
       <el-input v-model="listQuery.account" placeholder="Account" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nickname" placeholder="Nickname" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.tel" placeholder="Tel" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <select-role ref="refSelectRole" @changeSelect="selectRole"></select-role>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -123,7 +124,7 @@
         </el-button>
       </div>
     </el-dialog>
-      <changePwd></changePwd>    
+    <change-pwd ref="refChangePwd"></change-pwd>  
   </div>
 </template>
 
@@ -131,11 +132,12 @@
 import { userList,userDelete } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import {changePwd} from '@/layout/components/Account/changePwd.vue'
+import ChangePwd from '@/layout/components/Account/changePwd'
+import SelectRole from '@/layout/components/Account/selectRole'
 
 export default {
-  name: 'ViewAccountList',
-  components: { Pagination,changePwd },
+  name: 'AccountList',
+  components: { Pagination,ChangePwd ,SelectRole},
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -174,6 +176,7 @@ export default {
         account: '',
         nickname: '',
         tel: '',
+        roles:[],
         sort: '-id'
       },
       showReviewer: false,
@@ -196,6 +199,10 @@ export default {
     this.getList()
   },
   methods: {
+    selectRole(e){
+      console.log(e)
+      this.listQuery.roles = e
+    },
     getList() {
       this.listLoading = true
       userList(this.listQuery).then(response => {
@@ -209,7 +216,11 @@ export default {
     }, 
     onCreate(row){},
     onChange(row){
-      this.refs.changePwd.changePwding()
+      let from
+      console.log("userId:",this.$store.state.user.id)
+      from = this.$md5("AcountList_"+ this.$store.state.user.id).toUpperCase()
+      console.log("from:",from)
+      this.$refs.refChangePwd.changePwding(row,false,from)
     },
     onDelete(row){
       this.$confirm('确认删除吗?', '', {
