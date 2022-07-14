@@ -24,11 +24,12 @@
 </template>
 <script>
 import { userChangePwd } from '@/api/user'
+import { validPassword } from '@/utils/validate'
 export default {
   name: "ChangePwd",
   data() {
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (!validPassword(value)) {
         callback(new Error('至少6位数'))
       } else {
         callback()

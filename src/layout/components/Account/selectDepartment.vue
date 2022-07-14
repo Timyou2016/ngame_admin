@@ -1,32 +1,42 @@
 <template>
-<el-cascader
-    v-model="selectVal"
-    :options="options"
-    :props="{ checkStrictly: true }"
-    clearable></el-cascader>
+  <div class="components-container">
+    <el-cascader-select v-model="selectVal" :options=options :props=showProps :clearable=true v-on="$listeners">
+    </el-cascader-select>
+  </div>    
 </template>
 <script>
 import { departmentTree } from '@/api/department'
+import ElCascaderSelect from '@/components/CascaderSelect' // base on element-ui
   export default {
     name:"SelectDepartment",
+    components: { ElCascaderSelect },
     data() {
       return {
-        value:[],
-        options: []
+        options: [],
+        showProps:{
+          checkStrictly: true,
+          value:'id',
+          label:'name',
+          children:'childrens',
+        }
       };
-    },
-   computed: {
+    }, 
+  props: {
+    value: {
+      type: Array,
+      default: []
+    }
+  },    
+  computed: {
     selectVal: {
       get() {
         return [...this.value]
       },
       set(val) {
-        console.log(val)
-        this.value = val
-        console.log(this.value)
+        this.$emit('input', [...val])
       }
     }
-  },   
+  },        
   created() {
     this.departmentTree()
   },
@@ -49,8 +59,8 @@ import { departmentTree } from '@/api/department'
     departmentTree(){
         departmentTree().then(response => {
             let list = response.data
-            let options = this.recurDeparments(list)
-            this.options = options
+            //let options = this.recurDeparments(list)
+            this.options = list
             console.log(this.options)
         })   
     },  

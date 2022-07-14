@@ -8,7 +8,6 @@ const getDefaultState = () => {
     nickname: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     id: 0
-
   }
 }
 
@@ -32,7 +31,6 @@ const mutations = {
       state.avatar = avatar
     }
   },
-
 }
 
 const actions = {
@@ -76,9 +74,9 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
@@ -95,7 +93,21 @@ const actions = {
       commit('RESET_STATE')
       resolve()
     })
-  }
+  },
+
+  // user logout
+  logout({ commit }) {
+    return new Promise((resolve, reject) => {
+      logout().then(() => {
+        removeToken() // must remove  token  first
+        resetRouter()
+        commit('RESET_STATE')
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },  
 }
 
 export default {

@@ -4,8 +4,8 @@
       <el-input v-model="listQuery.account" placeholder="Account" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nickname" placeholder="Nickname" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.tel" placeholder="Tel" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <select-role ref="refSelectRole" @changeSelect="selectRole" style="display:inline-block;margin-right:10px;"></select-role>
-      <select-department ref="refSelectDepartment"  style="display:inline-block;margin-right:10px;"></select-department>
+      <select-role ref="refSelectRole" @changeSelect="selectRole" :value=listQuery.roles style="display:inline-block;margin-right:10px;"></select-role>
+      <select-department ref="refSelectDepartment" :value=listQuery.departments @changeSelect="selectDepartment" style="display:inline-block;margin-right:10px;"></select-department>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -98,33 +98,6 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageNum" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
-        </el-button>
-      </div>
-    </el-dialog>
     <change-pwd ref="refChangePwd"></change-pwd>  
   </div>
 </template>
@@ -178,22 +151,12 @@ export default {
         nickname: '',
         tel: '',
         roles:[],
+        departments:[],
         sort: '-id'
       },
       showReviewer: false,
-      temp: {
-      },
       dialogFormVisible: false,
       dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
     }
   },
   created() {
@@ -205,7 +168,8 @@ export default {
       this.listQuery.roles = e
     },
     selectDepartment(e){
-      
+      this.listQuery.departments = e
+      console.log(e)
     },
     getList() {
       this.listLoading = true
@@ -218,11 +182,19 @@ export default {
         }, 1.5 * 1000)
       })
     }, 
-    onCreate(row){},
+    onCreate(row){
+      if (row) {
+        this.$router.push({name:'AccountCreate',query: {id:row.id}})
+      }else{
+        this.$router.push({name:'AccountCreate'})
+      }
+    },
     onChange(row){
       let from
       console.log("userId:",this.$store.state.user.id)
-      from = this.$md5("AcountList_"+ this.$store.state.user.id).toUpperCase()
+      let fromKey = "AcountList_"+ this.$store.state.user.id
+      console.log("fromKey:",fromKey)
+      from = this.$md5(fromKey).toUpperCase()
       console.log("from:",from)
       this.$refs.refChangePwd.changePwding(row,false,from)
     },
@@ -262,10 +234,7 @@ export default {
       }
       this.handleFilter()
     },
-    resetTemp() {
-      this.temp = {
-      }
-    },
+
 
     getSortClass: function(key) {
       const sort = this.listQuery.sort

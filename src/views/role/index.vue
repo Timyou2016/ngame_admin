@@ -29,7 +29,7 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Name" width="200">
+      <el-table-column label="角色名称" width="200">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
