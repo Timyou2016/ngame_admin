@@ -12,7 +12,7 @@ export function userCreate(data) {
   return request({
     url: '/admin/apiv1/user/create',
     method: 'post',
-    data: qs.stringify(data),     
+    data: qs.stringify(data,{indices:false}),     
   })
 }
 

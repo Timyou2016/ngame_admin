@@ -2,7 +2,8 @@
   <div class="app-container">
     <el-form ref="userform" :model="userform" :rules="rules" label-width="120px">
       <el-form-item label="登录账号" prop="account">
-        <el-input v-model="userform.account" />
+        <el-input v-if="userform.id > 0" :disabled="true" v-model="userform.account" />
+        <el-input v-if="userform.id == 0"  v-model="userform.account" />
       </el-form-item>
       <el-form-item label="初始密码" prop="password">
         <el-input v-model="userform.password" />
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import { userCreate } from '@/api/user'
+import { userCreate,getInfo } from '@/api/user'
 import SelectRole from '@/layout/components/Account/selectRole'
 import SelectDepartment from '@/layout/components/Account/selectDepartment'
 export default {
@@ -97,8 +98,13 @@ export default {
   },
   created() {
     this.resetForm()
-    if (this.$router.query){
-      this.userform.id = this.$router.query.id
+    if (this.$route.query && this.$route.query.id > 0){
+      this.userform.id = this.$route.query.id
+        getInfo({id:this.userform.id,rad:'ids'}).then(response => {
+        this.userform= response.data
+        }).catch((err) => {
+          console.log(err)
+        })      
     }
   },  
   methods: {
@@ -121,10 +127,10 @@ export default {
         console.log(valid)
         if (valid) {
           this.loading = true
-          var params = this.userform
+          var params = {...this.userform}
           params.password = this.$md5(params.password).toUpperCase()
           console.log(params,this.userform)
-          userCreate(this.userform).then(response => {
+          userCreate(params).then(response => {
             this.$message({
               type: 'success',
               message: '操作成功'

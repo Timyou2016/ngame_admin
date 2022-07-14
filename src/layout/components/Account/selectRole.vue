@@ -1,6 +1,6 @@
 <template>
   <div class="components-container">
-    <el-drag-select v-model="value" style="width:200px;" multiple placeholder="请选择角色" v-on="$listeners">
+    <el-drag-select v-model="selectVal" style="width:200px;" multiple placeholder="请选择角色" v-on="$listeners">
       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
     </el-drag-select>
   </div>
@@ -14,10 +14,25 @@ export default {
   components: { ElDragSelect },
   data() {
     return {
-      value: [],
       options: []
     }
   },
+  props: {
+    value: {
+      type: Array,
+      default: []
+    }
+  },    
+  computed: {
+    selectVal: {
+      get() {
+        return [...this.value]
+      },
+      set(val) {
+        this.$emit('input', [...val])
+      }
+    }
+  },   
   created() {
     this.roleList()
   },
