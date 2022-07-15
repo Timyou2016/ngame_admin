@@ -150,6 +150,7 @@ export default {
       })
     },
     onCancel() {
+      this.resetForm()
       this.back()
     },
     resetForm() {

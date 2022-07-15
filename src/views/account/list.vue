@@ -9,6 +9,9 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-s-open" @click="resetQuery">
+        重置
+      </el-button>      
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox>
@@ -87,7 +90,7 @@
       </el-table-column>                       
       <el-table-column class-name="status-col" label="状态" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | showStatus }}</el-tag>
+          <el-tag :type="scope.row.status | statusFilter" effect="dark">{{ scope.row.status | showStatus }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
@@ -127,9 +130,9 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
+        0: 'success',
         //draft: 'gray',
-        deleted: 'danger'
+        1: 'danger'
       }
       return statusMap[status]
     },    
@@ -253,7 +256,19 @@ export default {
       }
       this.handleFilter()
     },
-
+    resetQuery() {
+      this.listQuery = {
+        page: 1,
+        pageNum: 20,
+        account: '',
+        nickname: '',
+        tel: '',
+        roles:[],
+        departments:[],
+        sort: '-id'
+      }
+      this.handleFilter()
+    },
 
     getSortClass: function(key) {
       const sort = this.listQuery.sort

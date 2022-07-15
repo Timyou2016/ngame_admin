@@ -1,11 +1,14 @@
 <template>
   <div class="app-container">
     <div class="filter-container" style="margin-bottom:10px;">
-      <el-input v-model="listQuery.name" placeholder="Name" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="部门名称" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <select-department ref="refSearchDepartment" :value=searchDepartments @changeSelect="searchDepartment" style="display:inline-block;margin-right:10px;"></select-department>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-s-open" @click="resetQuery">
+        重置
+      </el-button>       
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox>
@@ -65,9 +68,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
+        <el-button @click="onCancel">Cancel</el-button>
         <el-button type="primary" @click="onCreate()">
           Confirm
         </el-button>
@@ -78,7 +79,7 @@
 </template>
 
 <script>
-import { departmentList,departmentCreate,departmentDelete } from '@/api/department'
+import { departmentList,departmentCreate,departmentDelete,departmentInfo } from '@/api/department'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import SelectDepartment from '@/layout/components/Account/selectDepartment'
@@ -126,6 +127,10 @@ export default {
     this.getList()
   },
   methods: {
+    onCancel() {
+      this.resetTemp()
+      this.dialogFormVisible = false
+    },    
     showParent(row){
         this.$refs.refShowParentDepartments.setDepartment(row)
     },
@@ -167,10 +172,16 @@ export default {
       this.dialogFormVisible = true
       this.dialogStatus = ActName
       if(row){
-        this.temp.id = row.id
-        this.temp.name = row.name
-        this.temp.parent_id = row.parent_id
-        this.createDepartments = [row.parent_id]
+        departmentInfo({id:row.id}).then(response => {
+          let data = response.data
+          this.temp.id = data.id
+          this.temp.name = data.name
+          this.temp.parent_id = data.parent_id
+          this.createDepartments = data.departments        
+        }).catch((err) => {
+          console.log(err)
+        })         
+
       }
     },
     onCreate(row){
@@ -229,7 +240,17 @@ export default {
       }
       this.createDepartments = []
     },
-
+    resetQuery() {
+      this.listQuery = {
+        page: 1,
+        pageNum: 20,
+        name: '',
+        parent_id: 0,
+        sort: '-id'
+      }
+      this.searchDepartments = []
+      this.handleFilter()
+    },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'

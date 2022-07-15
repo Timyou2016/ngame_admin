@@ -1,11 +1,11 @@
 <template>
   <div class="components-container">
-    <el-dialog v-el-drag-dialog :visible.sync="dialogTableVisible" :title="title" width="30%">   
+    <el-dialog v-el-drag-dialog :visible.sync="dialogTableVisible" :title="title" width="70%">   
       <el-table :data="gridData">
         <el-table-column property="id" label="路由ID" width="150" />
-        <el-table-column property="path_name" label="路由名称" width="200" />
-        <el-table-column property="path" label="路由路径" width="200" />
-        <el-table-column property="api_path" label="api访问接口" width="200" />
+        <el-table-column property="name" label="路由名称" width="150" />
+        <el-table-column property="path_name" label="前端标识" width="150" />
+        <el-table-column property="api_path" label="API访问接口" width="200" />
         <el-table-column property="is_show" label="是否前端路由" width="200" />
       </el-table>
     </el-dialog>
