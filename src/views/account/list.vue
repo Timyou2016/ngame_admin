@@ -33,57 +33,64 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="NickName" width="120">
+      <el-table-column label="员工名称" width="120">
         <template slot-scope="scope">
           {{ scope.row.nickname }}
         </template>
       </el-table-column>
-      <el-table-column label="Account" width="120" align="center">
+      <el-table-column label="登录账号" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.account }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" label="Role" width="110" align="center">
+      <el-table-column v-if="showReviewer" label="角色" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.role_id }}</span>
+          <span v-if="scope.row.roles.length == 0"></span>
+          <span v-if="scope.row.roles.length == 1">{{ scope.row.role_name }}</span>
+          <el-tooltip v-if="scope.row.roles.length > 1" class="item" effect="dark" content="点击查看已分配角色" placement="top-start"> 
+              <el-link  :underline="false" @click="showRoles(scope.row)"><i class="el-icon-view el-icon--right" ></i> </el-link>
+          </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" label="Department" width="110" align="center">
+      <el-table-column v-if="showReviewer" label="部门" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.department_id }}</span>
+          <span v-if="scope.row.department_parent_id == 0">{{ scope.row.department_name }}</span>
+          <el-tooltip v-if="scope.row.department_parent_id != 0" class="item" effect="dark" content="查看所有父级部门" placement="top-start"> 
+              <el-link  :underline="false" @click="showDepartments(scope.row)">{{ scope.row.department_name }}<i class="el-icon-view el-icon--right" ></i> </el-link>
+          </el-tooltip>         
         </template>
       </el-table-column>            
-      <el-table-column label="Number" width="80" align="center">
+      <el-table-column label="员工编号" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.number }}</span>
         </template>
       </el-table-column>      
-      <el-table-column label="Email" width="150" align="center">
+      <el-table-column label="邮箱" width="150" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Wechat" width="110" align="center">
+      <el-table-column label="微信号" width="110" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.wechat }}</span>
         </template>
       </el-table-column>    
-      <el-table-column label="Tel" width="110" align="center">
+      <el-table-column label="手机" width="110" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.tel }}</span>
         </template>
       </el-table-column> 
-      <el-table-column v-if="showReviewer" class-name="sex-col" label="Sex" width="60" align="center">
+      <el-table-column v-if="showReviewer" class-name="sex-col" label="性别" width="60" align="center">
         <template slot-scope="scope">
         <span>{{ scope.row.sex | showSex }}</span>
         </template>
       </el-table-column>                       
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <el-table-column class-name="status-col" label="状态" width="110" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | showStatus }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" align="center" prop="create_at" label="CreatedAt" width="220">
+      <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.create_at }}</span>
         </template>
@@ -98,7 +105,9 @@
       </el-table-column>
     </el-table>
 
-    <change-pwd ref="refChangePwd"></change-pwd>  
+    <change-pwd ref="refChangePwd"></change-pwd> 
+    <show-user-roles ref="refShowUserRoles"></show-user-roles> 
+    <show-parent-departments ref="refShowParentDepartments"></show-parent-departments> 
   </div>
 </template>
 
@@ -109,9 +118,11 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import ChangePwd from '@/layout/components/Account/changePwd'
 import SelectRole from '@/layout/components/Account/selectRole'
 import SelectDepartment from '@/layout/components/Account/selectDepartment'
+import ShowUserRoles from '@/layout/components/Account/showUserRoles'
+import ShowParentDepartments from '@/layout/components/Account/showParentDepartments'
 export default {
   name: 'AccountList',
-  components: { Pagination,ChangePwd ,SelectRole ,SelectDepartment},
+  components: { Pagination,ChangePwd ,SelectRole ,SelectDepartment ,ShowUserRoles,ShowParentDepartments},
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -163,6 +174,14 @@ export default {
     this.getList()
   },
   methods: {
+    showRoles(row){
+      console.log("role-user:",row)
+      this.$refs.refShowUserRoles.setUser(row)
+    },
+    showDepartments(row){
+      console.log("departs-user:",row)
+      this.$refs.refShowParentDepartments.setUser(row)
+    },
     selectRole(e){
       console.log(e)
       this.listQuery.roles = e

@@ -1,25 +1,25 @@
 import request from '@/utils/request'
 import qs from 'qs';
 
-export function departmentCreate(data) {
+export function regrouterCreate(data) {
   return request({
-    url: '/admin/apiv1/department/create',
+    url: '/admin/apiv1/router/create',
     method: 'post',
     data: qs.stringify(data),
   })
 }
 
-export function departmentDelete(data) {
+export function regrouterDelete(data) {
   return request({
-    url: '/admin/apiv1/department/delete',
+    url: '/admin/apiv1/router/delete',
     method: 'post',
     data: qs.stringify(data),
   })
 }
 
-export function departmentInfo(data) {
+export function regrouterInfo(data) {
   return request({
-    url: '/admin/apiv1/department/info',
+    url: '/admin/apiv1/router/info',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -29,9 +29,9 @@ export function departmentInfo(data) {
 }
 
 
-export function departmentList(data) {
+export function regrouterList(data) {
   return request({
-    url: 'admin/apiv1/department/list',
+    url: 'admin/apiv1/router/list',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -40,9 +40,9 @@ export function departmentList(data) {
   })
 }
 
-export function departmentTree(data) {
+export function regrouterTree(data) {
   return request({
-    url: 'admin/apiv1/department/tree',
+    url: 'admin/apiv1/router/tree',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -50,9 +50,9 @@ export function departmentTree(data) {
     }
   })
 }
-export function departmentAllParent(data) {
+export function regrouterAllParent(data) {
   return request({
-    url: 'admin/apiv1/department/parents',
+    url: 'admin/apiv1/router/parents',
     method: 'get',
     params: data,
     paramsSerializer:params=>{

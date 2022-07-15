@@ -86,7 +86,13 @@ export const constantRoutes = [
         name: 'DepartmentList',
         component: () => import('@/views/department/index'),
         meta: { title: '部门管理', icon: 'table',noCache: true }
-      }              
+      },
+      {
+        path: '/system/regrouter/index',
+        name: 'RegrouterList',
+        component: () => import('@/views/regrouter/index'),
+        meta: { title: '路由管理', icon: 'table',noCache: true }
+      },                     
     ]
   },
 

@@ -5,7 +5,7 @@
         <el-input v-if="userform.id > 0" :disabled="true" v-model="userform.account" />
         <el-input v-if="userform.id == 0"  v-model="userform.account" />
       </el-form-item>
-      <el-form-item label="初始密码" prop="password">
+      <el-form-item v-if="userform.id == 0" label="初始密码" prop="password">
         <el-input v-model="userform.password" />
       </el-form-item>      
       <el-form-item label="员工名称" prop="nickname">
@@ -128,7 +128,9 @@ export default {
         if (valid) {
           this.loading = true
           var params = {...this.userform}
-          params.password = this.$md5(params.password).toUpperCase()
+          if (this.userform.id == 0){
+              params.password = this.$md5(params.password).toUpperCase()
+          }
           console.log(params,this.userform)
           userCreate(params).then(response => {
             this.$message({

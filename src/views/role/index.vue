@@ -24,17 +24,17 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="roleTable" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="roleTable" align="center" width="200" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色名称" width="200">
+      <el-table-column label="角色名称" align="center" width="320">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" align="center" prop="create_at" label="CreatedAt" width="220">
+      <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.create_at }}</span>
         </template>
@@ -81,29 +81,6 @@ export default {
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        //draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },    
-    showStatus(status) {
-      const showMap = {
-        0: '正常',
-        1: '冻结'
-      }
-      return showMap[status]
-    },
-    showSex(sex){
-      const sexMap = {
-        0: '未知',
-        1: '男',
-        2: '女'
-      }
-      return sexMap[sex]      
-    },
   },
   data() {
     return {

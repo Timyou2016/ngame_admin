@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container" style="margin-bottom:10px;">
-      <el-input v-model="listQuery.name" placeholder="Name" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <select-department ref="refSearchDepartment" :value=searchDepartments @changeSelect="searchDepartment" style="display:inline-block;margin-right:10px;"></select-department>
+      <el-input v-model="listQuery.path_name" placeholder="路由名称" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <select-regrouter ref="refSearchRegrouter" :value=searchRegrouters @changeSelect="searchRegrouter" style="display:inline-block;margin-right:10px;"></select-regrouter>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -25,19 +25,34 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="departmentTable" align="center" width="150" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="regrouterTable" align="center" width="150" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>        
-      <el-table-column label="部门名称" align="center" width="320">
+      <el-table-column label="路由名称" align="center" width="220px">
         <template slot-scope="scope">
-          <span v-if="scope.row.parent_id == 0">{{ scope.row.name }}</span>
-          <el-tooltip v-if="scope.row.parent_id > 0" class="item" effect="dark" content="查看所有父级部门" placement="top-start"> 
-              <el-link  :underline="false" @click="showParent(scope.row)">{{ scope.row.name }}<i class="el-icon-view el-icon--right" ></i> </el-link>
+          <span v-if="scope.row.parent_id == 0">{{ scope.row.path_name }}</span>
+          <el-tooltip v-if="scope.row.parent_id > 0" class="item" effect="dark" content="查看所有父级路由" placement="top-start"> 
+              <el-link  :underline="false" @click="showParent(scope.row)">{{ scope.row.path_name }}<i class="el-icon-view el-icon--right" ></i> </el-link>
           </el-tooltip>            
         </template>
       </el-table-column>
+      <el-table-column label="前端路径" align="center" width="220px">
+        <template slot-scope="scope">
+          {{ scope.row.path }}
+        </template>
+      </el-table-column>
+      <el-table-column label="访问API" align="center" width="220px">
+        <template slot-scope="scope">
+          {{ scope.row.api_path }}
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="是否独立页" width="220px" align="center">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.is_show | statusFilter">{{ scope.row.is_show | showStatus }}</el-tag>
+        </template>
+      </el-table-column>                         
       <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.create_at }}</span>
@@ -56,13 +71,24 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="120px" style="width: 450px; margin-left:50px;">
-        <el-form-item label="父级部门" prop="parent_id">
-          <select-department ref="refSelectDepartment" placeholder="顶级部门" :value=createDepartments  @changeSelect="selectDepartment" style="display:inline-block;margin-right:10px;"></select-department>
-        </el-form-item>      
-        <el-form-item label="部门名称" prop="name">
+        <el-form-item label="父级路由" prop="name">
+          <select-regrouter ref="refSelectRegrouter" placeholder="顶级路由" :value=createRegrouters  @changeSelect="selectRegrouter" style="display:inline-block;margin-right:10px;"></select-regrouter>
+        </el-form-item>     
+        <el-form-item label="路由名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-
+        <el-form-item label="前端路由标识" prop="path_name">
+          <el-input v-model="temp.path_name" />
+        </el-form-item>
+        <el-form-item label="访问API" prop="api_path">
+          <el-input v-model="temp.api_path" />
+        </el-form-item>
+        <el-form-item label="是否独立页" prop="is_show">
+          <el-radio-group v-model="temp.is_show">
+            <el-radio :label=0 >否</el-radio>
+            <el-radio :label=1 >是</el-radio>
+          </el-radio-group>
+        </el-form-item>                          
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -73,22 +99,36 @@
         </el-button>
       </div>
     </el-dialog>
-    <show-parent-departments ref="refShowParentDepartments"></show-parent-departments> 
+    <show-parent-regrouters ref="refShowParentRegrouters"></show-parent-regrouters> 
   </div>
 </template>
 
 <script>
-import { departmentList,departmentCreate,departmentDelete } from '@/api/department'
+import { regrouterList,regrouterCreate,regrouterDelete } from '@/api/regrouter'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import SelectDepartment from '@/layout/components/Account/selectDepartment'
-import ShowParentDepartments from '@/layout/components/Account/showParentDepartments'
+import SelectRegrouter from '@/layout/components/RegRouter/selectRegrouter'
+import ShowParentRegrouters from '@/layout/components/RegRouter/showParentRegrouters'
 export default {
-  name: 'DepartmentList',
-  components: { Pagination , SelectDepartment,ShowParentDepartments},
+  name: 'RegrouterList',
+  components: { Pagination , SelectRegrouter,ShowParentRegrouters},
   directives: { waves },
   filters: {
-  
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        //draft: 'gray',
+        deleted: 'danger'
+      }
+      return statusMap[status]
+    },    
+    showStatus(status) {
+      const showMap = {
+        0: '否',
+        1: '是'
+      }
+      return showMap[status]
+    },  
   },
   data() {
     return {
@@ -99,26 +139,32 @@ export default {
       listQuery: {
         page: 1,
         pageNum: 20,
+        path_name: '',
         name: '',
+        api_path:'',
         parent_id: 0,
         sort: '-id'
       },
-      searchDepartments:[],
-      createDepartments:[],
+      searchRegrouters:[],
+      createRegrouters:[],
       showReviewer: false,
       temp: {
         id:0,
         parent_id:0,
-        name:''
+        path_name:'',
+        name:'',
+        api_path:'',
+        is_show:0  
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑部门',
-        create: '创建部门'
+        update: '编辑路由',
+        create: '创建创建'
       },
       rules: {
-        name: [{ required: true, message: '部门名称必填', trigger: 'blur' }]
+        name: [{ required: true, message: '前端路径必填', trigger: 'blur' }],
+        api_path: [{ required: true, message: '访问API必填', trigger: 'blur' }],
       },
     }
   }, 
@@ -127,33 +173,33 @@ export default {
   },
   methods: {
     showParent(row){
-        this.$refs.refShowParentDepartments.setDepartment(row)
+        this.$refs.refShowParentRegrouters.setRegrouter(row)
     },
-    searchDepartment(e){
-      this.searchDepartments = e
+    searchRegrouter(e){
+      this.searchRegrouters = e
       if (e.length > 0){
         this.listQuery.parent_id = e[e.length-1]
       }else{
         this.listQuery.parent_id = 0
       }
-      console.log(this.searchDepartments)
+      console.log(this.searchRegrouters)
       console.log(this.listQuery)
     },  
 
-    selectDepartment(e){
-      this.createDepartments = e
+    selectRegrouter(e){
+      this.createRegrouters = e
       if (e.length > 0){
         this.temp.parent_id = e[e.length-1]
       }else{
         this.temp.parent_id = 0
       }
-      console.log(this.createDepartments)
+      console.log(this.createRegrouters)
       console.log(this.temp)
       console.log(e)
     },    
     getList() {
       this.listLoading = true
-      departmentList(this.listQuery).then(response => {
+      regrouterList(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -166,20 +212,22 @@ export default {
       this.resetTemp()
       this.dialogFormVisible = true
       this.dialogStatus = ActName
-      if(row){
+      if(row){         
         this.temp.id = row.id
-        this.temp.name = row.name
-        this.temp.parent_id = row.parent_id
-        this.createDepartments = [row.parent_id]
+        this.temp.path_name = row.path_name
+        this.temp.path = row.path
+        this.temp.api_path = row.api_path
+        this.temp.is_show = row.is_show
+        this.createRegrouters = [row.parent_id]
       }
     },
     onCreate(row){
-      departmentCreate(this.temp).then(response => {
+      regrouterCreate(this.temp).then(response => {
         this.resetTemp()
         this.dialogFormVisible = false
         this.getList()
-        this.$refs.refSearchDepartment.departmentTree()
-        this.$refs.refSelectDepartment.departmentTree()
+        this.$refs.refSearchRegrouter.regrouterTree()
+        this.$refs.refSelectRegrouter.regrouterTree()
       })      
     },
 
@@ -190,14 +238,14 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          await departmentDelete({id:row.id}).then(response => {
+          await regrouterDelete({id:row.id}).then(response => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'
             })             
             this.getList()
-            this.$refs.refSearchDepartment.departmentTree()
-            this.$refs.refSelectDepartment.departmentTree()            
+            this.$refs.refSearchRegrouter.regrouterTree()
+            this.$refs.refSelectRegrouter.regrouterTree()            
           })           
         })
         .catch(err => { console.error(err) })
@@ -225,9 +273,12 @@ export default {
       this.temp = {
         id:0,
         parent_id:0,
-        name:''    
+        path_name:'',
+        path:'',
+        api_path:'',
+        is_show:0    
       }
-      this.createDepartments = []
+      this.createRegrouters = []
     },
 
     getSortClass: function(key) {
