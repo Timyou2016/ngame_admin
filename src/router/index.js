@@ -98,14 +98,14 @@ export const constantRoutes = [
   {
     path: '/config',
     component: Layout,
-    redirect: '/config/dragcon',
+    redirect: '/config/dragcard',
     name: 'Config',
     meta: { title: '配置管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: '/config/dragcon',
-        name: 'ConfigDragCon',
-        component: () => import('@/views/config/dragcon'),
+        path: '/config/dragcard',
+        name: 'DragCardCon',
+        component: () => import('@/views/config/dragcard'),
         meta: { title: 'Table', icon: 'table' }
       }
     ]

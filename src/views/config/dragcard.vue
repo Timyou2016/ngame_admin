@@ -14,7 +14,7 @@
 import JsonEditor from '@/components/JsonEditor'
 import { dragcardConGet,dragcardConSet } from '@/api/ngame'
 export default {
-  name: 'DragCard',
+  name: 'DragCardCon',
   components: { JsonEditor },
   data() {
     return {
