@@ -12,7 +12,7 @@
 
 <script>
 import JsonEditor from '@/components/JsonEditor'
-import { dragcardGet,dragcardSet } from '@/api/ngame'
+import { dragcardConGet,dragcardConSet } from '@/api/ngame'
 export default {
   name: 'DragCard',
   components: { JsonEditor },
@@ -23,7 +23,7 @@ export default {
     }
   },
   created() {
-        dragcardGet().then(response => {
+        dragcardConGet().then(response => {
         this.value= response.data
         }).catch((err) => {
           console.log(err)
@@ -32,7 +32,7 @@ export default {
   methods:{
     onSubmit(){
         this.loading = true
-        dragcardSet({val:JSON.stringify(this.value)}).then(response => {
+        dragcardConSet({val:JSON.stringify(this.value)}).then(response => {
             this.$message({
               type: 'success',
               message: '保存成功'

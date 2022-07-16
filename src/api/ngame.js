@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import qs from 'qs';
 
-export function dragcardSet(data) {
+export function dragcardConSet(data) {
   return request({
     url: 'apiv1/ngame/dragcard/set',
     method: 'post',
@@ -10,7 +10,7 @@ export function dragcardSet(data) {
 }
 
 
-export function dragcardGet(data) {
+export function dragcardConGet(data) {
   return request({
     url: 'apiv1/ngame/dragcard/get',
     method: 'get',
