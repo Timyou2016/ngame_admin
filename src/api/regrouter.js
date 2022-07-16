@@ -3,7 +3,7 @@ import qs from 'qs';
 
 export function regrouterCreate(data) {
   return request({
-    url: '/admin/apiv1/router/create',
+    url: 'apiv1/router/create',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -11,7 +11,7 @@ export function regrouterCreate(data) {
 
 export function regrouterDelete(data) {
   return request({
-    url: '/admin/apiv1/router/delete',
+    url: 'apiv1/router/delete',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -19,7 +19,7 @@ export function regrouterDelete(data) {
 
 export function regrouterInfo(data) {
   return request({
-    url: '/admin/apiv1/router/info',
+    url: 'apiv1/router/info',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -31,7 +31,7 @@ export function regrouterInfo(data) {
 
 export function regrouterList(data) {
   return request({
-    url: 'admin/apiv1/router/list',
+    url: 'apiv1/router/list',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -42,7 +42,7 @@ export function regrouterList(data) {
 
 export function regrouterTree(data) {
   return request({
-    url: 'admin/apiv1/router/tree',
+    url: 'apiv1/router/tree',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -52,7 +52,7 @@ export function regrouterTree(data) {
 }
 export function regrouterAllParent(data) {
   return request({
-    url: 'admin/apiv1/router/parents',
+    url: 'apiv1/router/parents',
     method: 'get',
     params: data,
     paramsSerializer:params=>{

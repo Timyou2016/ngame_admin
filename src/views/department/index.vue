@@ -46,7 +46,11 @@
           <span>{{ scope.row.create_at }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column v-if="showReviewer" align="center" prop="update_at" label="最近更新时间" width="220">
+        <template slot-scope="scope">
+          <span>{{ scope.row.update_at }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="Actions" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">    
       <el-button type="success" icon="el-icon-edit" @click="onShowForm('update',scope.row)" size="mini">编 辑</el-button>

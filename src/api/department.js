@@ -3,7 +3,7 @@ import qs from 'qs';
 
 export function departmentCreate(data) {
   return request({
-    url: '/admin/apiv1/department/create',
+    url: 'apiv1/department/create',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -11,7 +11,7 @@ export function departmentCreate(data) {
 
 export function departmentDelete(data) {
   return request({
-    url: '/admin/apiv1/department/delete',
+    url: 'apiv1/department/delete',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -19,7 +19,7 @@ export function departmentDelete(data) {
 
 export function departmentInfo(data) {
   return request({
-    url: '/admin/apiv1/department/info',
+    url: 'apiv1/department/info',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -31,7 +31,7 @@ export function departmentInfo(data) {
 
 export function departmentList(data) {
   return request({
-    url: 'admin/apiv1/department/list',
+    url: 'apiv1/department/list',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -42,7 +42,7 @@ export function departmentList(data) {
 
 export function departmentTree(data) {
   return request({
-    url: 'admin/apiv1/department/tree',
+    url: 'apiv1/department/tree',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -52,7 +52,7 @@ export function departmentTree(data) {
 }
 export function departmentAllParent(data) {
   return request({
-    url: 'admin/apiv1/department/parents',
+    url: 'apiv1/department/parents',
     method: 'get',
     params: data,
     paramsSerializer:params=>{

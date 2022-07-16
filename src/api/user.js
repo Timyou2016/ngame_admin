@@ -3,14 +3,14 @@ import qs from 'qs';
 
 export function login(data) {
   return request({
-    url: '/admin/apiv1/user/login',
+    url: 'apiv1/user/login',
     method: 'post',
     data: qs.stringify(data),
   })
 }
 export function userCreate(data) {
   return request({
-    url: '/admin/apiv1/user/create',
+    url: 'apiv1/user/create',
     method: 'post',
     data: qs.stringify(data,{indices:false}),     
   })
@@ -18,7 +18,7 @@ export function userCreate(data) {
 
 export function userChangePwd(data) {
   return request({
-    url: '/admin/apiv1/user/changePwd',
+    url: 'apiv1/user/changepwd',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -26,7 +26,7 @@ export function userChangePwd(data) {
 
 export function userDelete(data) {
   return request({
-    url: '/admin/apiv1/user/delete',
+    url: 'apiv1/user/delete',
     method: 'post',
     data: qs.stringify(data),
   })
@@ -34,7 +34,7 @@ export function userDelete(data) {
 
 export function getInfo(data) {
   return request({
-    url: '/admin/apiv1/user/info',
+    url: 'apiv1/user/info',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
@@ -45,7 +45,7 @@ export function getInfo(data) {
 
 export function logout() {
   return request({
-    url: '/admin/apiv1/user/logout',
+    url: 'apiv1/user/logout',
     method: 'post'
   })
 }
@@ -53,7 +53,7 @@ export function logout() {
 export function userList(data) {
   console.log(data)
   return request({
-    url: 'admin/apiv1/user/list',
+    url: 'apiv1/user/list',
     method: 'get',
     params: data,
     paramsSerializer:params=>{
