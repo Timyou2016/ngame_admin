@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <select-all></select-all>
+    <select-all v-model="value"></select-all>
   </div>
 </template>
 
