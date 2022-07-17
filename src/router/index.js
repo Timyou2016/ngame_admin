@@ -92,7 +92,14 @@ export const constantRoutes = [
         name: 'RegrouterList',
         component: () => import('@/views/regrouter/index'),
         meta: { title: '路由管理', icon: 'table',noCache: true }
-      },                     
+      },  
+      {
+        path: '/system/role/setPermission',
+        name: 'SetPermission',
+        hidden: true,
+        component: () => import('@/views/role/permission'),
+        meta: { title: '设置权限', icon: 'form' ,noCache: true}
+      },                           
     ]
   },
   {
@@ -106,8 +113,20 @@ export const constantRoutes = [
         path: '/config/dragcard',
         name: 'DragCardCon',
         component: () => import('@/views/config/dragcard'),
-        meta: { title: 'Table', icon: 'table' }
-      }
+        meta: { title: '抽卡配置', icon: 'table' }
+      },
+      {
+        path: '/config/hangup',
+        name: 'HangupCon',
+        component: () => import('@/views/config/hangup'),
+        meta: { title: '挂机配置', icon: 'table' }
+      },
+      {
+        path: '/config/pve',
+        name: 'pveCon',
+        component: () => import('@/views/config/pve'),
+        meta: { title: 'PVE配置', icon: 'table' }
+      },           
     ]
   },
   {

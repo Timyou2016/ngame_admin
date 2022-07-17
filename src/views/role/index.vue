@@ -31,7 +31,9 @@
       </el-table-column>
       <el-table-column label="角色名称" align="center" width="320">
         <template slot-scope="scope">
-          {{ scope.row.name }}
+          <el-tooltip class="item" effect="dark" content="点击设置权限" placement="top-start"> 
+              <el-link  :underline="false" @click="setPermission(scope.row)">{{ scope.row.name }}<i class="el-icon-view el-icon--right" ></i> </el-link>
+          </el-tooltip>             
         </template>
       </el-table-column>
       <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
@@ -129,6 +131,9 @@ export default {
         }, 1.5 * 1000)
       })
     }, 
+    setPermission(row){
+      this.$router.push({name:'SetPermission',query: {role_id:row.id}})
+    },
     onShowForm(ActName,row){
       this.resetTemp()
       this.dialogFormVisible = true
