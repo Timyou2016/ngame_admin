@@ -53,7 +53,7 @@
           {{ scope.row.api_path }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="是否独立页" width="220px" align="center">
+      <el-table-column class-name="status-col" label="是否前端路由" width="220px" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.is_show | statusFilter">{{ scope.row.is_show | showStatus }}</el-tag>
         </template>
@@ -92,7 +92,7 @@
         <el-form-item label="访问API" prop="api_path">
           <el-input v-model="temp.api_path" />
         </el-form-item>
-        <el-form-item label="是否独立页" prop="is_show">
+        <el-form-item label="是否前端路由" prop="is_show">
           <el-radio-group v-model="temp.is_show">
             <el-radio :label=0 >否</el-radio>
             <el-radio :label=1 >是</el-radio>

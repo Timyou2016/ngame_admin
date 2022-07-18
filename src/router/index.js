@@ -58,7 +58,7 @@ export const constantRoutes = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/account/index',
+    redirect: '/system/account/list',
     name: 'System',
     meta: { title: '系统管理', icon: 'el-icon-s-help' },
     children: [
@@ -66,7 +66,7 @@ export const constantRoutes = [
         path: '/system/account/list',
         name: 'AccountList',
         component: () => import('@/views/account/list'),
-        meta: { title: '账号管理', icon: 'table' ,noCache: true}
+        meta: { title: '账号列表', icon: 'table' ,noCache: true}
       },      
       {
         path: '/system/account/create',
@@ -79,19 +79,19 @@ export const constantRoutes = [
         path: '/system/role/index',
         name: 'RoleList',
         component: () => import('@/views/role/index'),
-        meta: { title: '角色管理', icon: 'table',noCache: true }
+        meta: { title: '角色列表', icon: 'table',noCache: true }
       },  
       {
         path: '/system/department/index',
         name: 'DepartmentList',
         component: () => import('@/views/department/index'),
-        meta: { title: '部门管理', icon: 'table',noCache: true }
+        meta: { title: '部门列表', icon: 'table',noCache: true }
       },
       {
         path: '/system/regrouter/index',
         name: 'RegrouterList',
         component: () => import('@/views/regrouter/index'),
-        meta: { title: '路由管理', icon: 'table',noCache: true }
+        meta: { title: '路由列表', icon: 'table',noCache: true }
       },  
       {
         path: '/system/role/setPermission',
@@ -123,7 +123,7 @@ export const constantRoutes = [
       },
       {
         path: '/config/pve',
-        name: 'pveCon',
+        name: 'PveCon',
         component: () => import('@/views/config/pve'),
         meta: { title: 'PVE配置', icon: 'table' }
       },           

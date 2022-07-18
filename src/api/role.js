@@ -28,13 +28,24 @@ export function roleInfo(data) {
   })
 }
 
-export function roleRouters(data) {
+export function roleGetPermission(data) {
+  return request({
+    url: 'apiv1/role/get-permission',
+    method: 'get',
+    params: data,
+    paramsSerializer:params=>{
+      return qs.stringify(params,{indices:false})
+    }
+  })
+}
+
+export function roleSetPermission(data) {
     return request({
-      url: 'apiv1/role/routers',
+      url: 'apiv1/role/set-permission',
       method: 'post',
-      data: qs.stringify(data),
+      data: qs.stringify(data,{indices:false})
     })
-  }
+}
 
 export function roleList(data) {
   console.log(data)

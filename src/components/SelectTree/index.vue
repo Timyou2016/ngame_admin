@@ -1,21 +1,22 @@
 <template>
-  <div class="select-all">
+  <div class="select-tree">
     <div style="margin: 15px 0;"></div>
     <el-tree
       :data="value"
       show-checkbox
       node-key="id"
-      :default-expanded-keys="[]"
-      :default-checked-keys="[]"
-      :props="defaultProps">
+      ref="refSetPermission"
+      :default-expanded-keys="expanded"
+      :default-checked-keys="checked"
+      :props="defaultProps" v-on="$listeners">
     </el-tree>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'SelectAll',
-    props: ['value'],
+    name: 'SelectTree',
+    props: ['value','expanded','checked'],
     data() {
       return {
         defaultProps: {
