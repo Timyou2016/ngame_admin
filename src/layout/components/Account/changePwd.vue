@@ -1,8 +1,9 @@
 <template>
   <el-dialog title="修改密码" :visible.sync="dialogChangePwd">
-    <el-row :gutter="20" v-if="pwdform.id > 0">
-      <el-col :span="6"><div class="grid-content bg-purple">账号：{{account}}</div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple">昵称：{{nickname}}</div></el-col>
+    <el-row :gutter="20" v-if="pwdform.id > 0" style="margin-left:30px;">
+      <span>账号：{{account}}</span>
+      <el-divider direction="vertical"></el-divider>
+      <span>昵称：{{nickname}}</span>     
     </el-row>  
     <el-form ref="changePwdForm" :rules="rules" :model="pwdform" label-position="left" label-width="120px" style="width: 450px; margin-left:50px;">
       <el-form-item label="新密码" prop="password">

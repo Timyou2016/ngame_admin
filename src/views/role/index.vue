@@ -129,10 +129,13 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
-      })
+      }).catch((err) => {
+          console.log(err)
+          this.listLoading = false
+      }) 
     }, 
     setPermission(row){
-      this.$router.push({name:'SetPermission',query: {role_id:row.id}})
+      this.$router.push({name:'SetPermission',query: {role_id:row.id,name:row.name}})
     },
     onShowForm(ActName,row){
       this.resetTemp()

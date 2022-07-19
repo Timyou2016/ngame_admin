@@ -206,7 +206,10 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
-      })
+      }).catch((err) => {
+          console.log(err)
+          this.listLoading = false
+      }) 
     }, 
     onCreate(row){
       if (row) {

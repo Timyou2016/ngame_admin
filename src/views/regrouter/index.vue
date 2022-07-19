@@ -57,7 +57,12 @@
         <template slot-scope="scope">
           <el-tag :type="scope.row.is_show | statusFilter">{{ scope.row.is_show | showStatus }}</el-tag>
         </template>
-      </el-table-column>                         
+      </el-table-column>   
+      <el-table-column class-name="status-col" label="是否可以授权" width="220px" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.hide | showHide}}
+        </template>
+      </el-table-column>                                
       <el-table-column v-if="showReviewer" align="center" prop="create_at" label="创建时间" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.create_at }}</span>
@@ -97,7 +102,13 @@
             <el-radio :label=0 >否</el-radio>
             <el-radio :label=1 >是</el-radio>
           </el-radio-group>
-        </el-form-item>                          
+        </el-form-item>    
+        <el-form-item label="是否可以授权" prop="hide">
+          <el-radio-group v-model="temp.hide">
+            <el-radio :label=0 >是</el-radio>
+            <el-radio :label=1 >否</el-radio>
+          </el-radio-group>
+        </el-form-item>                                 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="onCancel">Cancel</el-button>
@@ -135,7 +146,14 @@ export default {
         1: '是'
       }
       return showMap[status]
-    },  
+    }, 
+    showHide(hide){
+      const hideMap = {
+        0: '是',
+        1: '否'
+      }
+      return hideMap[hide]      
+    }, 
   },
   data() {
     return {
@@ -161,7 +179,8 @@ export default {
         path_name:'',
         name:'',
         api_path:'',
-        is_show:0  
+        is_show:0,
+        hide:0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -170,7 +189,7 @@ export default {
         create: '创建创建'
       },
       rules: {
-        name: [{ required: true, message: '前端路径必填', trigger: 'blur' }],
+        name: [{ required: true, message: '路由名称必填', trigger: 'blur' }],
       },
     }
   }, 
@@ -216,7 +235,10 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
-      })
+      }).catch((err) => {
+          console.log(err)
+          this.listLoading = false
+      }) 
     }, 
     onShowForm(ActName,row){
       this.resetTemp()
@@ -230,6 +252,7 @@ export default {
           this.temp.name = data.name
           this.temp.api_path = data.api_path
           this.temp.is_show = data.is_show
+          this.temp.hide = data.hide
           this.createRegrouters = data.routers       
         }).catch((err) => {
           console.log(err)
@@ -291,7 +314,8 @@ export default {
         path_name:'',
         name:'',
         api_path:'',
-        is_show:0    
+        is_show:0,
+        hide:0    
       }
       this.createRegrouters = []
     },
