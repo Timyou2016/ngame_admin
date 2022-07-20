@@ -108,7 +108,7 @@ export default {
         console.log("handleCheckedCitiesChange-value",value)
         console.log("handleCheckedCitiesChange-checked",this.checked)
         let checkedCount = value.length;
-        this.checkAll = checkedCount === this.checked.length;
+        this.checkAll = checkedCount === total;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.checked.length;
       },      
       getChecked() {
