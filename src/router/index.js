@@ -139,6 +139,12 @@ export const asyncRoutes = [
         meta: { title: '路由列表', icon: 'table',noCache: true }
       },
       {
+        path: '/system/apireqlog/index',
+        name: 'ApiReqLog',
+        component: () => import('@/views/apireqlog/index'),
+        meta: { title: 'API日志', icon: 'table',noCache: true }
+      },     
+      {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
         meta: { title: 'External Link', icon: 'link' }
       }                               
