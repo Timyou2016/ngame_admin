@@ -1,7 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container" style="margin-bottom:10px;">
-      <el-input v-model="listQuery.req_path" placeholder="请求路径" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+    <el-input v-model="listQuery.uid" placeholder="平台UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+    <el-input v-model="listQuery.game_uid" placeholder="游戏UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+    <el-input v-model="listQuery.api_path" placeholder="请求路径" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
     <el-date-picker style="margin-right:10px;"
       v-model="listQuery.ymd"
       type="date"
@@ -43,10 +45,25 @@
         <template slot-scope="scope">
           <span>{{ scope.row.ymd }}</span>           
         </template>
-      </el-table-column>             
-      <el-table-column label="API路径" align="center" prop="req_path" width="320">
+      </el-table-column>
+      <el-table-column label="所属游戏" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.req_path }}</span>           
+          <span>{{ scope.row.game_id | showGame }}</span>
+        </template>
+      </el-table-column>   
+      <el-table-column label="游戏UID" width="150" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.game_uid }}</span>
+        </template>
+      </el-table-column>       
+      <el-table-column label="平台UID" width="150" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.uid }}</span>
+        </template>
+      </el-table-column>                     
+      <el-table-column label="API路径" align="center" prop="api_path" width="320">
+        <template slot-scope="scope">
+          <span>{{ scope.row.api_path }}</span>           
         </template>
       </el-table-column>
       <el-table-column align="center" prop="req_time" label="耗时时长(s)" width="120">
@@ -69,9 +86,9 @@
           <span>{{ scope.row.resp_err_body }}</span>           
         </template>
       </el-table-column>               
-      <el-table-column v-if="showReviewer" align="center" prop="create_at" label="请求时间" width="220">
+      <el-table-column v-if="showReviewer" align="center" prop="create_time" label="请求时间" width="220">
         <template slot-scope="scope">
-          <span>{{ scope.row.create_at }}</span>
+          <span>{{ scope.row.create_time }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -81,11 +98,11 @@
 </template>
 
 <script>
-import { apiReqLogList } from '@/api/logs'
+import { minigameGameLog } from '@/api/minigame/log'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
-  name: 'ApiReqLog',
+  name: 'MinigameGameLog',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -95,7 +112,14 @@ export default {
         1: '异常'
       }
       return showMap[status]
-    },  
+    }, 
+    showGame(gameId){
+      const gameMap = {
+        101: '星际海盗',
+        102: '屠龙少年',
+      }
+      return gameMap[gameId]      
+    },      
   },
   data() {
     return {
@@ -106,7 +130,9 @@ export default {
       listQuery: {
         page: 1,
         pageNum: 20,
-        req_path: '',
+        uid: '',
+        game_uid:'',
+        api_path: '',
         ymd: "",
         req_time:"",
         status:"",
@@ -121,7 +147,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      apiReqLogList(this.listQuery).then(response => {
+      minigameGameLog(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -157,7 +183,9 @@ export default {
       this.listQuery = {
         page: 1,
         pageNum: 20,
-        req_path: '',
+        uid: '',
+        game_uid:'',        
+        api_path: '',
         ymd: "",
         req_time:"",
         status:"",       

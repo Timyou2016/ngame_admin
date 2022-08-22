@@ -3,7 +3,13 @@
     <div class="filter-container" style="margin-bottom:10px;">
       <el-input v-model="listQuery.uid" placeholder="平台UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nick_name" placeholder="游戏昵称" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.ymd" placeholder="注册日期" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker style="margin-right:10px;"
+      v-model="listQuery.ymd"
+      type="date"
+      format="yyyyMMdd"
+      value-format="yyyyMMdd"
+      placeholder="注册日期">
+      </el-date-picker>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>

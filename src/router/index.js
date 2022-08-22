@@ -57,20 +57,41 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
-    path: '/minigame',
+    path: '/minigame/user',
     component: Layout,
     redirect: 'noRedirect',
     name: 'Minigame',
-    meta: { title: '小游戏', icon: 'el-icon-s-custom' },
+    meta: { title: '游戏用户', icon: 'el-icon-s-custom' },
     children: [
       {
         path: '/minigame/user/list',
         name: 'MinigameUserList',
         component: () => import('@/views/minigame/user/list'),
-        meta: { title: '游戏玩家', icon: 'table' ,noCache: true}
+        meta: { title: '游戏玩家', icon: 'el-icon-s-custom' ,noCache: true}
       },         
     ]
   },  
+  {
+    path: '/minigame/log',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Minigame',
+    meta: { title: '游戏日志', icon: 'el-icon-view' },
+    children: [
+      {
+        path: '/minigame/log/game-log',
+        name: 'MinigameGameLog',
+        component: () => import('@/views/minigame/log/game-log'),
+        meta: { title: '游戏API日志', icon: 'el-icon-s-data' ,noCache: true}
+      },   
+      {
+        path: '/minigame/log/plat-log',
+        name: 'MinigamePlatLog',
+        component: () => import('@/views/minigame/log/plat-log'),
+        meta: { title: '平台API日志', icon: 'el-icon-s-data' ,noCache: true}
+      },            
+    ]
+  },   
   {
     path: '/config',
     component: Layout,
@@ -157,7 +178,7 @@ export const asyncRoutes = [
         path: '/system/apireqlog/index',
         name: 'ApiReqLog',
         component: () => import('@/views/apireqlog/index'),
-        meta: { title: 'API日志', icon: 'table',noCache: true }
+        meta: { title: 'API日志', icon: 'el-icon-view',noCache: true }
       },     
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
