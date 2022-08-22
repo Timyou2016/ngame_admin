@@ -111,7 +111,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageNum" @pagination="getList" />
     <change-pwd ref="refChangePwd"></change-pwd> 
     <show-user-roles ref="refShowUserRoles"></show-user-roles> 
     <show-parent-departments ref="refShowParentDepartments"></show-parent-departments> 

@@ -57,6 +57,21 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
+    path: '/minigame',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Minigame',
+    meta: { title: '小游戏', icon: 'el-icon-s-custom' },
+    children: [
+      {
+        path: '/minigame/user/list',
+        name: 'MinigameUserList',
+        component: () => import('@/views/minigame/user/list'),
+        meta: { title: '游戏玩家', icon: 'table' ,noCache: true}
+      },         
+    ]
+  },  
+  {
     path: '/config',
     component: Layout,
     redirect: 'noRedirect',
