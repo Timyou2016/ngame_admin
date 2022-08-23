@@ -57,22 +57,47 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
-    path: '/minigame/user',
+    path: '/minigame',
     component: Layout,
     redirect: 'noRedirect',
     name: 'Minigame',
-    meta: { title: '游戏用户', icon: 'el-icon-s-custom' },
+    meta: { title: '游戏信息', icon: 'el-icon-s-data' },
     children: [
+      {
+        path: '/minigame/game/list',
+        name: 'MinigameGameList',
+        component: () => import('@/views/minigame/common/game-list'),
+        meta: { title: '游戏列表', icon: 'el-icon-s-data' ,noCache: true}
+      },       
       {
         path: '/minigame/user/list',
         name: 'MinigameUserList',
         component: () => import('@/views/minigame/user/list'),
-        meta: { title: '游戏玩家', icon: 'el-icon-s-custom' ,noCache: true}
-      },         
+        meta: { title: '游戏玩家', icon: 'el-icon-user' ,noCache: true}
+      }, 
+      {
+        path: '/minigame/game/prop/list',
+        name: 'MinigameGamePropList',
+        component: () => import('@/views/minigame/common/game-prop-list'),
+        meta: { title: '游戏道具', icon: 'el-icon-s-ticket' ,noCache: true}
+      },  
+      {
+        path: '/minigame/game/prop/edit',
+        name: 'MinigameGamePropEdit',
+        hidden: true,
+        component: () => import('@/views/minigame/common/game-prop-edit'),
+        meta: { title: '编辑道具', icon: 'form' ,noCache: true}
+      },        
+      {
+        path: '/minigame/game/config/list',
+        name: 'MinigameGameConfigList',
+        component: () => import('@/views/minigame/common/game-config-list'),
+        meta: { title: '游戏配置', icon: 'el-icon-setting' ,noCache: true}
+      },                            
     ]
   },  
   {
-    path: '/minigame/log',
+    path: '/minigame/log/game-log',
     component: Layout,
     redirect: 'noRedirect',
     name: 'Minigame',
