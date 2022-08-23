@@ -54,6 +54,9 @@ export default {
             let list = response.data.list
             list.forEach((item) => {
                 console.log(item)
+            if (this.value == 0){
+                this.$emit('changeSelect', item.id)
+            }                
                 let option = {
                     value:item.id,
                     label:item.name,

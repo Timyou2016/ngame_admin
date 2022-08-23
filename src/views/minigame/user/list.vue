@@ -20,6 +20,14 @@
         reviewer
       </el-checkbox>
     </div> 
+     <div class="top-container" style="margin: 5px 10px;">
+      <el-tag
+        v-for="tag in countList"
+        :key="tag.name"
+        >
+        {{tag.name}}:{{tag.count}}
+      </el-tag>
+    </div>     
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -97,7 +105,7 @@
 </template>
 
 <script>
-import { minigameUserList } from '@/api/minigame/user'
+import { minigameUserList ,minigameUserCountList } from '@/api/minigame/user'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
@@ -142,6 +150,7 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      countList:null,
       listQuery: {
         page: 1,
         pageNum: 20,
@@ -155,6 +164,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getCountList()
   },
   methods: {
     getList() {
@@ -171,6 +181,20 @@ export default {
           this.listLoading = false
       }) 
     }, 
+    getCountList() {
+      this.listLoading = true
+      minigameUserCountList({}).then(response => {
+        console.log(response)
+        this.countList = response.data
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      }).catch((err) => {
+          console.log(err)
+          this.listLoading = false
+      }) 
+    },     
     handleFilter() {
       this.listQuery.page = 1
       this.getList()

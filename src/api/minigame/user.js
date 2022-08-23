@@ -8,3 +8,11 @@ return request({
     data: qs.stringify(data,{indices:false}),     
 })
 }
+
+export function minigameUserCountList(data) {
+    return request({
+        url: 'apiv1/minigame/user/count-list',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+    }
