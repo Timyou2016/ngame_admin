@@ -24,9 +24,9 @@
      <div class="top-container" style="margin: 5px 10px;">
       <el-tag
         v-for="tag in countList"
-        :key="tag.name"
+        :key="tag.gameName"
         >
-        {{tag.name}}:{{tag.count}}
+        {{tag.gameName}}:{{tag.count}}
       </el-tag>
     </div>     
     <el-table

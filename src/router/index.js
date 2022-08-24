@@ -64,17 +64,17 @@ export const asyncRoutes = [
     meta: { title: '游戏信息', icon: 'el-icon-s-data' },
     children: [
       {
+        path: '/minigame/user/list',
+        name: 'MinigameUserList',
+        component: () => import('@/views/minigame/user/list'),
+        meta: { title: '游戏玩家', icon: 'el-icon-user' ,noCache: true}
+      },       
+      {
         path: '/minigame/game/list',
         name: 'MinigameGameList',
         component: () => import('@/views/minigame/common/game-list'),
         meta: { title: '游戏列表', icon: 'el-icon-s-data' ,noCache: true}
       },       
-      {
-        path: '/minigame/user/list',
-        name: 'MinigameUserList',
-        component: () => import('@/views/minigame/user/list'),
-        meta: { title: '游戏玩家', icon: 'el-icon-user' ,noCache: true}
-      }, 
       {
         path: '/minigame/game/prop/list',
         name: 'MinigameGamePropList',

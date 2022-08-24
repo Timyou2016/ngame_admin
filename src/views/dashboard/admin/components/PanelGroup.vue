@@ -3,14 +3,14 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" v-for="(item,index) in list">
       <div class="card-panel" @click="handleSetLineChartData(index)">
         <div class="card-panel-icon-wrapper icon-people">
-          <img :src="item.icon" v-if="item.icon != ''" width="50" height="50" class-name="card-panel-icon"/>
-          <svg-icon v-if="item.icon == ''" icon-class="peoples" class-name="card-panel-icon" />
+          <img :src="item.gameIcon" v-if="item.gameIcon != ''" width="50" height="50" class-name="card-panel-icon"/>
+          <svg-icon v-if="item.gameIcon == ''" icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            {{item.name}}
+            {{item.gameName}}
           </div>
-          <count-to :start-val="0" :end-val="item.data.total" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="item.gameData.total" :duration="2600" class="card-panel-num" />
         </div>       
       </div>
     </el-col>
@@ -26,7 +26,7 @@ export default {
   },
   props: {
     list: {
-      type: Array,
+      type: Object,
       required: true
     },    
   },  
@@ -45,6 +45,28 @@ export default {
 
   .card-panel-col {
     margin-bottom: 32px;
+  }
+
+  .hover_class{
+      .card-panel-icon-wrapper {
+        color: #fff;
+      }
+
+      .icon-people {
+        background: #40c9c6;
+      }
+
+      .icon-message {
+        background: #36a3f7;
+      }
+
+      .icon-money {
+        background: #f4516c;
+      }
+
+      .icon-shopping {
+        background: #34bfa3
+      }
   }
 
   .card-panel {

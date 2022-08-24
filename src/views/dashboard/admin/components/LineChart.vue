@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+import * as echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import resize from './mixins/resize'
+import * as resize from './mixins/resize'
 
 export default {
   mixins: [resize],
@@ -28,7 +28,7 @@ export default {
     },
     chartData: {
       type: Object,
-      required: true
+      required: true,
     }
   },
   data() {
@@ -61,14 +61,14 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ data, name } = {}) {
-      console.log("data",data)
-      console.log("name",name)
+    setOptions({ gameData, gameName } = {}) {
+      console.log("gameData",gameData)
+      console.log("gameName",gameName)
       this.chart.setOption({
         xAxis: {
           type:"category",
           name:"注册日期",
-          data: data.dates
+          data:gameData.dates
         },
         yAxis: {
           type:"value",
@@ -89,13 +89,21 @@ export default {
           padding: [5, 10]
         },              
         legend: {
-          data: [name]
+          data: [gameName]
         },        
         series: [{
-          name:name,
+          name:gameName,
           itemStyle: {
             normal: {
-              color: '#FF005A',
+              label: {
+                show: true, //开启显示数值
+                position: 'top', //数值在上方显示
+                textStyle: {  //数值样式
+                  color: '#409EFF',   //字体颜色
+                  fontSize: 14  //字体大小
+                }
+              },
+              color: '#67C23A',
               lineStyle: {
                 color: '#FF005A',
                 width: 2
@@ -104,7 +112,7 @@ export default {
           },
           smooth: true,
           type: 'line',
-          data:  data.stats,
+          data: gameData.stats,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }]
