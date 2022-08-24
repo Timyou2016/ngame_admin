@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" v-for="(item,index) in list">
-      <div class="card-panel" @click="handleSetLineChartData(index)">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col" v-for=" item in list">
+      <div class="card-panel" >
         <div class="card-panel-icon-wrapper icon-people">
           <img :src="item.icon" v-if="item.icon != ''" width="50" height="50" class-name="card-panel-icon"/>
           <svg-icon v-if="item.icon == ''" icon-class="peoples" class-name="card-panel-icon" />
@@ -10,7 +10,7 @@
           <div class="card-panel-text">
             {{item.name}}
           </div>
-          <count-to :start-val="0" :end-val="item.data.total" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="item.count" :duration="2600" class="card-panel-num" />
         </div>       
       </div>
     </el-col>
@@ -19,22 +19,31 @@
 
 <script>
 import CountTo from 'vue-count-to'
-
+import { minigameUserCountList } from '@/api/minigame/user'
 export default {
   components: {
     CountTo
   },
-  props: {
-    list: {
-      type: Array,
-      required: true
-    },    
+  data() {
+    return {
+      list: [],
+    }
+  }, 
+  created() {
+    this.getList()
   },  
   methods: {
-    handleSetLineChartData(type) {
-      console.log(8888888,type,this.list)
-      this.$emit('handleSetLineChartData', type)
-    }
+      getList(){
+        minigameUserCountList({}).then(response => {
+          console.log(response)
+          this.list = response.data
+          // Just to simulate the time of the request
+          setTimeout(() => {
+          }, 1.5 * 1000)
+        }).catch((err) => {
+            console.log(err)
+        })         
+      },
   }
 }
 </script>

@@ -1,5 +1,4 @@
 <template>
-  <div class="components-container">
     <el-select v-model="selectVal" v-bind="$attrs" clearable placeholder="请选择游戏" v-on="$listeners">
         <el-option
         v-for="item in options"
@@ -9,8 +8,7 @@
         <span style="float: left">{{ item.label }}</span>
         <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
-    </el-select>    
-  </div>
+    </el-select> 
 </template>
 
 <script>
@@ -30,7 +28,7 @@ export default {
     status: {
       type: Number,
       default: -1
-    },    
+    },      
   },    
   computed: {
     selectVal: {
@@ -38,31 +36,26 @@ export default {
         return this.value
       },
       set(val) {
-        console.log(222222,val)
-        console.log(11111,this.value)
         this.$emit('input', val)
         this.$emit('changeSelect', val)
       }
     }
   },   
   created() {
-    this.gameList()
+    this.gameList()  
   },
   methods: {
     gameList(){
         minigameGameList({noPage:1,status:this.status}).then(response => {
             let list = response.data.list
-            list.forEach((item) => {
-                console.log(item)
-            if (this.value == 0){
-                this.$emit('changeSelect', item.id)
-            }                
+            list.forEach((item) => {               
                 let option = {
                     value:item.id,
                     label:item.name,
                 }
             this.options.push(option)
             })
+            this.$emit('changeSelect', this.options[0].value)  
             console.log(this.options)
         })   
     },  

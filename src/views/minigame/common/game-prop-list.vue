@@ -1,16 +1,7 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="margin-bottom:10px;">
-    <el-select v-model="listQuery.game_id" style="margin-right:10px;" placeholder="请选择游戏" @change="handleFilter">
-        <el-option
-        v-for="item in games"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-        <span style="float: left">{{ item.label }}</span>
-        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-        </el-option>
-    </el-select>    
+    <div class="filter-container" style="margin-bottom:10px;">  
+    <select-game ref="refSelectGame" @changeSelect="selectGameId" :value=listQuery.game_id :status=1 style="margin-right:10px;"></select-game>
     <el-input v-model="listQuery.prop_id" placeholder="道具ID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
 
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -45,7 +36,7 @@
       </el-table-column>   
       <el-table-column label="所属游戏" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.game_id | showGame }}</span>
+          <span>{{ games[scope.row.game_id] }}</span>
         </template>
       </el-table-column>   
       <el-table-column label="道具ID" width="100" align="center">
@@ -108,11 +99,13 @@
 <script>
 import { minigameGamePropList,minigameGamePropDelete } from '@/api/minigame/common'
 import { parseTime } from '@/utils/index'
+import { gamesMap } from '@/utils/minigame'
+import SelectGame from '@/layout/components/Minigame/selectGame'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'MinigameGamePropList',
-  components: { Pagination },
+  components: { Pagination,SelectGame },
   directives: { waves },
   filters: {
     showExp(exp) {
@@ -121,13 +114,6 @@ export default {
       }
       return exp/3600 + " H"
     }, 
-    showGame(gameId){
-      const gameMap = {
-        101: '星际海盗',
-        102: '屠龙少年',
-      }
-      return gameMap[gameId]      
-    },  
     formateDate(time) {
         if (time == 0){
             return ""
@@ -138,15 +124,6 @@ export default {
   data() {
     return {
       tableKey: 0,
-      games:[{
-        value:101,
-        label:"星际海盗"
-      },
-      {
-        value:102,
-        label:"屠龙少年"
-      }
-      ],
       list: null,
       total: 0,
       listLoading: true,
@@ -154,19 +131,29 @@ export default {
         page: 1,
         pageNum: 20,
         prop_id:'',
-        game_id: '',
+        game_id: 0,
         sort: '-id'
       },
+      games:{},
       showReviewer: false,
     }
   }, 
   created() {
-    this.getList()
+    this.init()
   },
   methods: {
+    selectGameId(e){
+      this.listQuery.game_id = e
+      this.handleFilter()
+    }, 
+    async init(){
+        this.games = await gamesMap(1)
+        await this.getList()
+    },
     getList() {
       this.listLoading = true
-      minigameGamePropList(this.listQuery).then(response => {
+      minigameGamePropList(this.listQuery).then(async(response) => {
+        console.log(3333,response)
         this.list = response.data.list
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -226,7 +213,7 @@ export default {
         page: 1,
         pageNum: 20,
         prop_id:'',
-        game_id: '',    
+        game_id: this.listQuery.game_id,   
         sort: '-id'
       }
       this.handleFilter()

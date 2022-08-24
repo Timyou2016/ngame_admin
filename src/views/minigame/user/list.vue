@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container" style="margin-bottom:10px;">
+      <select-game ref="refSelectGame" @changeSelect="selectGameId" :value=listQuery.game_id :status=1 style="margin-right:10px;"></select-game>
       <el-input v-model="listQuery.uid" placeholder="平台UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.nick_name" placeholder="游戏昵称" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-date-picker style="margin-right:10px;"
@@ -45,7 +46,7 @@
       </el-table-column>
       <el-table-column label="所属游戏" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.game_id | showGame }}</span>
+          <span>{{ games[scope.row.game_id] }}</span>
         </template>
       </el-table-column>   
       <el-table-column label="平台UID" width="150" align="center">
@@ -107,10 +108,12 @@
 <script>
 import { minigameUserList ,minigameUserCountList } from '@/api/minigame/user'
 import waves from '@/directive/waves' // waves directive
+import SelectGame from '@/layout/components/Minigame/selectGame'
+import { gamesMap } from '@/utils/minigame'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'MinigameUserList',
-  components: { Pagination },
+  components: { Pagination,SelectGame },
   directives: { waves },
   filters: {
     userTypeFilter(status) {
@@ -135,14 +138,7 @@ export default {
         1: '已赠送',
       }
       return guardMap[sex]      
-    },
-    showGame(gameId){
-      const gameMap = {
-        101: '星际海盗',
-        102: '屠龙少年',
-      }
-      return gameMap[gameId]      
-    },    
+    },   
   },
   data() {
     return {
@@ -159,14 +155,23 @@ export default {
         ymd: '',
         sort: '-id'
       },
+      games:{},
       showReviewer: false,
     }
   },
   created() {
-    this.getList()
-    this.getCountList()
+    this.init()
   },
   methods: {
+    async init(){
+        this.games = await gamesMap(1)
+        await this.getCountList()
+        await this.getList()
+    },  
+    selectGameId(e){
+      this.listQuery.game_id = e
+      this.handleFilter()
+    },         
     getList() {
       this.listLoading = true
       minigameUserList(this.listQuery).then(response => {
