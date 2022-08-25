@@ -7,20 +7,20 @@
       </el-form-item>           
       <el-form-item label="所属游戏" prop="game_id">
         <select-game ref="refSelectGame" @changeSelect="selectGameId" :value=editform.game_id :status=1 ></select-game>
-      </el-form-item>  
-      <el-form-item label="AdminId" prop="admin_id">
-        <el-input v-model="editform.admin_id" />
-      </el-form-item>              
+      </el-form-item>               
       <el-form-item label="配置KEY" prop="config_key">
         <el-input v-model="editform.config_key" />
       </el-form-item>    
       <el-form-item label="配置内容" prop="config_value">
-        <json-editor ref="jsonEditor" v-model="editform.config_value" />
-        <el-tooltip placement="top" content="返回顶部">
-        <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="50" transition-name="fade" />
-        </el-tooltip>        
-      </el-form-item>            
-    </el-form>    
+        <json-editor ref="jsonEditor" v-model="editform.config_value" />       
+      </el-form-item>  
+      <el-form-item label="AdminId" prop="admin_id">
+        <el-input v-model="editform.admin_id" />
+      </el-form-item>                 
+    </el-form>  
+    <el-tooltip placement="top" content="返回顶部">
+    <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="50" transition-name="fade" />
+    </el-tooltip>         
   </div>
 </template>
 
@@ -52,6 +52,17 @@ export default {
         config_value: {},
         admin_id: 0,
       },
+       rules: {
+        game_id: [
+            { required: true, message: '请选择游戏', trigger: 'blur'},
+          ],     
+        config_key: [
+            { required: true, message: '请输入配置KEY', trigger: 'blur'},
+          ],              
+        config_value: [
+          { required: true, trigger: 'blur',message:'请输入配置VALUE'}
+        ],
+      },      
     }
   },
   created() {
@@ -60,27 +71,25 @@ export default {
       this.editform.id = this.$route.query.id
         minigameGetGameConfig({id:this.editform.id}).then(response => {
         this.editform= response.data
-        this.select_game_id = this.editform.game_id
+        this.editform.config_value = JSON.parse(this.editform.config_value)
         }).catch((err) => {
           console.log(err)
         })      
     }   
-        minigameGetGameConfig().then(response => {
-        this.value= response.data
-        }).catch((err) => {
-          console.log(err)
-        })  
   },  
   methods:{
+    back() {
+      this.$store.dispatch('tagsView/delView', this.$route)
+      this.$router.go(-1);
+    },     
     selectGameId(e){
-      console.log(e,3333)
       this.editform.game_id = e
     },      
     onSubmit(){
         this.loading = true
           var params = {...this.editform}
           console.log(params,this.editform)  
-          params.config_value = JSON.stringify(this.editform.value)      
+          params.config_value = JSON.stringify(this.editform.config_value)      
         minigameGameConfigEdit(params).then(response => {
             this.$message({
               type: 'success',

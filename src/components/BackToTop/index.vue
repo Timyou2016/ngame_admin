@@ -88,6 +88,7 @@ export default {
   display: inline-block;
   text-align: center;
   cursor: pointer;
+  z-index:999;
 }
 
 .back-to-ceiling:hover {

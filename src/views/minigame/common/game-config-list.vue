@@ -12,7 +12,12 @@
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox>
-    </div>  
+    </div>
+     <div class="top-container" style="margin: 5px 10px;">
+      <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="onCreate">
+        创建
+      </el-button>
+    </div>       
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -33,16 +38,11 @@
           <span>{{ games[scope.row.game_id] }}</span>
         </template>
       </el-table-column>   
-      <el-table-column label="配置KEY" width="150" align="center">
+      <el-table-column label="配置KEY" width="200" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.config_key }}</span>
         </template>
-      </el-table-column>       
-      <el-table-column label="配置Value" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.config_value }}</span>
-        </template>
-      </el-table-column>                     
+      </el-table-column>                                   
       <el-table-column v-if="showReviewer" label="AdminId" align="center" prop="admin_id" width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.admin_id }}</span>           
@@ -58,6 +58,12 @@
           <span>{{ scope.row.update_time | formateDate }}</span>
         </template>
       </el-table-column>
+     <el-table-column label="Actions" align="center" class-name="small-padding fixed-width" min-width="200">
+        <template slot-scope="scope">    
+      <el-button type="success" icon="el-icon-edit" @click="onCreate(scope.row)" size="mini">编 辑</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="onDelete(scope.row)" size="mini"/>             
+        </template>
+      </el-table-column>        
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageNum" @pagination="getList" />
 
@@ -65,7 +71,7 @@
 </template>
 
 <script>
-import { minigameGameConfigList } from '@/api/minigame/common'
+import { minigameGameConfigList,minigameDeleteGameConfig } from '@/api/minigame/common'
 import { parseTime } from '@/utils/index'
 import SelectGame from '@/layout/components/Minigame/selectGame'
 import { gamesMap } from '@/utils/minigame'
@@ -118,8 +124,32 @@ export default {
     },    
     async init(){
         this.games = await gamesMap(1)
-        await this.getList()
-    },    
+        //await this.getList()
+    },
+    onCreate(row){
+      if (row) {
+        this.$router.push({name:'GameConfigEdit',query: {id:row.id}})
+      }else{
+        this.$router.push({name:'GameConfigEdit'})
+      }
+    },     
+    onDelete(row){
+      this.$confirm('确认删除吗?', '', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      })
+        .then(async() => {
+          await minigameDeleteGameConfig({id:row.id}).then(response => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })             
+            this.getList()
+          })           
+        })
+        .catch(err => { console.error(err) })
+    },        
     getList() {
       this.listLoading = true
       minigameGameConfigList(this.listQuery).then(response => {

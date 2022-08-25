@@ -103,7 +103,7 @@ export const asyncRoutes = [
       },
       {
         path: '/minigame/game/config/edit',
-        name: 'MinigameGamePropEdit',
+        name: 'GameConfigEdit',
         hidden: true,
         component: () => import('@/views/minigame/common/game-config-edit'),
         meta: { title: '编辑配置', icon: 'form' ,noCache: true }

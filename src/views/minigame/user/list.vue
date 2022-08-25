@@ -166,7 +166,7 @@ export default {
     async init(){
         this.games = await gamesMap(1)
         await this.getCountList()
-        await this.getList()
+        //await this.getList()
     },  
     selectGameId(e){
       this.listQuery.game_id = e

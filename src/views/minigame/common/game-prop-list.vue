@@ -148,7 +148,7 @@ export default {
     }, 
     async init(){
         this.games = await gamesMap(1)
-        await this.getList()
+        //await this.getList()
     },
     getList() {
       this.listLoading = true
