@@ -1,47 +1,41 @@
 <template>
   <div class="app-container">
-    <el-form ref="userform" :model="userform" :rules="rules" label-width="120px">
-      <el-form-item label="登录账号" prop="account">
-        <el-input v-if="userform.id > 0" :disabled="true" v-model="userform.account" />
-        <el-input v-if="userform.id == 0"  v-model="userform.account" />
-      </el-form-item>
-      <el-form-item v-if="userform.id == 0" label="初始密码" prop="password">
-        <el-input v-model="userform.password" />
-      </el-form-item>      
-      <el-form-item label="员工名称" prop="nickname">
-        <el-input v-model="userform.nickname" />
-      </el-form-item>      
-      <el-form-item label="所属部门" prop="departments">
-        <select-department ref="refSelectDepartment" @changeSelect="selectDepartment" :value=userform.departments ></select-department>
-      </el-form-item>         
-      <el-form-item label="所属角色" prop="roles">
-        <select-role ref="refSelectRole" @changeSelect="selectRole" :value=userform.roles ></select-role>
-      </el-form-item>
-      <el-form-item label="员工工号" prop="number">
-        <el-input v-model="userform.number" />
+    <div style="margin:20px 20px;">
+    <el-button type="primary" :loading="loading" @click="onCancel">返回</el-button>
+    </div>
+    <el-form ref="editform" :model="editform" :rules="rules" label-width="120px">               
+      <el-form-item label="游戏名称" prop="name">
+        <el-input v-model="editform.name" />
       </el-form-item>    
-      <el-form-item label="员工手机" prop="tel">
-        <el-input v-model="userform.tel" />
+      <el-form-item label="游戏Icon" prop="icon">
+        <el-input v-model="editform.icon" />
       </el-form-item> 
-      <el-form-item label="员工邮箱" prop="email">
-        <el-input v-model="userform.email" />
+      <el-form-item label="游戏大图" prop="img">
+        <el-input v-model="editform.img" />
       </el-form-item> 
-      <el-form-item label="员工微信号" prop="wechat">
-        <el-input v-model="userform.wechat" />
-      </el-form-item>             
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="userform.sex">
-          <el-radio :label=0 >未知</el-radio>
-          <el-radio :label=1 >男</el-radio>
-          <el-radio :label=2 >女</el-radio>
-        </el-radio-group>
+      <el-form-item label="游戏入口页(默认)" prop="url">
+        <el-input v-model="editform.url" />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="userform.status">
-          <el-radio :label=0 >正常</el-radio>
-          <el-radio :label=1 >冻结</el-radio>
+       <el-form-item label="游戏入口页(手机)" prop="mobile_url">
+        <el-input v-model="editform.mobile_url" />
+      </el-form-item>   
+       <el-form-item label="游戏入口页(PC)" prop="pc_url">
+        <el-input v-model="editform.pc_url" />
+      </el-form-item>   
+       <el-form-item label="AdminId" prop="admin_id">
+        <el-input v-model="editform.admin_id" />
+      </el-form-item>                    
+    <el-form-item label="游戏描述">
+        <el-input type="textarea" v-model="editform.desc"></el-input>
+    </el-form-item>  
+       <el-form-item label="状态" prop="status">
+        <el-radio-group v-model="editform.status">
+          <el-radio :label=0 >删除</el-radio>
+          <el-radio :label=1 >正常</el-radio>
+          <el-radio :label=2 >维护</el-radio>
+          <el-radio :label=3 >规划中</el-radio>
         </el-radio-group>
-      </el-form-item>      
+      </el-form-item>              
       <el-form-item>
         <el-button type="primary" :loading="loading" @click="onSubmit">Create</el-button>
         <el-button @click="onCancel">Cancel</el-button>
@@ -51,88 +45,69 @@
 </template>
 
 <script>
-import { userCreate,getInfo } from '@/api/user'
-import SelectRole from '@/layout/components/Account/selectRole'
-import SelectDepartment from '@/layout/components/Account/selectDepartment'
+import { minigameEditGame,minigameGetGame } from '@/api/minigame/common'
 export default {
-  name:"AccountCreate",
-  components: { SelectRole ,SelectDepartment},
+  name:"MinigameGameEdit",
+  components: {},
   data() {   
     return {
-      userform: {
+      editform: {
         id:0,
-        account: '',
-        password:'123456',
-        nickname: '',
-        roles: [],
-        departments:[],        
-        sex: 1,
-        status: 0,
-        department_id: 0,
-        number:  '',
-        tel: '',
-        email: '',
-        wechat: ''
+        name: '',
+        desc:'',
+        icon: '',
+        img: '',
+        url: "",
+        pc_url: '',
+        mobile_url:  '',
+        status: 1,
+        admin_id: 0,
       },
       loading: false,
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
       rules: {
-        account: [
-            { required: true, message: '请输入登录账号', trigger: 'blur'},
-            { min: 4, max: 30, message: '登录账号长度在 4 到 30 个字符', trigger: 'blur' }
+        name: [
+            { required: true, message: '请输入游戏名称', trigger: 'blur'},
           ],     
-        password: [
-            { required: true, message: '请设置初始密码', trigger: 'blur'},
-            { min: 6, max: 30, message: '密码长度在 6 到 30 个字符', trigger: 'blur' }
-          ],              
-        nickname: [
-          { required: true, trigger: 'blur',message:'请输入员工名称'}
-          ],
-        roles: [{ required: true, trigger: 'blur', message:'请选择角色'}],
-        departments: [{ required: true, trigger: 'blur',message:'请选择部门' }]
+        icon: [
+            { required: true, message: '请输入Icon地址', trigger: 'blur'},
+          ],   
+        url: [
+            { required: true, message: '游戏入口页(默认)', trigger: 'blur'},
+        ],                     
       },            
     }
   },
   created() {
     this.resetForm()
     if (this.$route.query && this.$route.query.id > 0){
-      this.userform.id = this.$route.query.id
-        getInfo({id:this.userform.id,rad:'ids'}).then(response => {
-        this.userform= response.data
+        this.loading = true
+        this.editform.id = this.$route.query.id
+        minigameGetGame({id:this.editform.id}).then(response => {
+        this.editform= response.data
+        this.loading = false
         }).catch((err) => {
           console.log(err)
+          this.loading = false
         })      
     }
   },  
   methods: {
     back() {
+      this.$store.dispatch('tagsView/delView', this.$route)
       this.$router.go(-1);
-    }, 
-     selectRole(e){
-      console.log(e)
-      this.userform.roles = e
-    },
-    selectDepartment(e){
-      this.userform.departments = e
-      if (e.length > 0){
-        this.userform.department_id = e[e.length - 1]
-      }
-      console.log(e)
-    },      
+    },     
     onSubmit() {
-      this.$refs['userform'].validate((valid) => {  
+      this.$refs['editform'].validate((valid) => {  
         console.log(valid)
         if (valid) {
           this.loading = true
-          var params = {...this.userform}
-          if (this.userform.id == 0){
-              params.password = this.$md5(params.password).toUpperCase()
-          }
-          console.log(params,this.userform)
-          userCreate(params).then(response => {
+          var params = {...this.editform}
+          console.log(params,this.editform)
+          minigameEditGame(params).then(response => {
             this.$message({
               type: 'success',
               message: '操作成功'
@@ -154,20 +129,17 @@ export default {
       this.back()
     },
     resetForm() {
-      this.userform = {
+      this.editform = {
         id:0,
-        account: '',
-        password:'123456',
-        nickname: '',
-        roles: [],
-        departments:[],        
-        sex: 1,
-        status: 0,
-        department_id: 0,
-        number:  '',
-        tel: '',
-        email: '',
-        wechat: ''        
+        name: '',
+        desc:'',
+        icon: '',
+        img: '',
+        url: "",
+        pc_url: '',
+        mobile_url:  '',
+        status: 1,
+        admin_id: 0,
       }
     }    
   }

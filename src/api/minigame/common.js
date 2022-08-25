@@ -9,6 +9,22 @@ return request({
 })
 }
 
+export function minigameGetGame(data) {
+    return request({
+        url: 'apiv1/minigame/common/get-game',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}
+
+export function minigameEditGame(data) {
+    return request({
+        url: 'apiv1/minigame/common/edit-game',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}
+
 export function minigameGamePropList(data) {
     return request({
         url: 'apiv1/minigame/common/game-prop-list',
@@ -60,6 +76,14 @@ export function minigameGameConfigEdit(data) {
 export function minigameGetGameConfig(data) {
     return request({
         url: 'apiv1/minigame/common/get-game-config',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}
+
+export function minigameDeleteGameConfig(data) {
+    return request({
+        url: 'apiv1/minigame/common/delete-game-config',
         method: 'post',
         data: qs.stringify(data,{indices:false}),     
     })

@@ -18,7 +18,12 @@
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         reviewer
       </el-checkbox>
-    </div>  
+    </div>
+     <div class="top-container" style="margin: 5px 10px;">
+      <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="onCreate">
+        创建
+      </el-button>
+    </div>       
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -84,6 +89,11 @@
           <span>{{ scope.row.update_time | formateDate}}</span>
         </template>
       </el-table-column>
+     <el-table-column label="Actions" align="center" class-name="small-padding fixed-width" min-width="200">
+        <template slot-scope="scope">    
+        <el-button type="success" icon="el-icon-edit" @click="onCreate(scope.row)" size="mini">编 辑</el-button>
+    </template>
+      </el-table-column>       
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageNum" @pagination="getList" />
 
@@ -95,19 +105,19 @@ import { minigameGameList } from '@/api/minigame/common'
 import { parseTime } from '@/utils/index'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+const statusMap = {
+    0: '删除',
+    1: '正常',
+    2: '维护',
+    3: '规划中',
+}
 export default {
   name: 'MinigameGameList',
   components: { Pagination },
   directives: { waves },
   filters: {
     showStatus(status) {
-      const showMap = {
-        0: '删除',
-        1: '正常',
-        2: '维护',
-        3: '规划中',
-      }
-      return showMap[status]
+      return statusMap[status]
     },   
     formateDate(time) {
         if (time == 0){
@@ -127,7 +137,7 @@ export default {
         pageNum: 20,
         name: '',
         id:'',
-        status:"",
+        status:1,
         sort: '-id'
       },
       showReviewer: false,
@@ -140,9 +150,6 @@ export default {
     getList() {
       this.listLoading = true
       const params = this.listQuery
-      if (params.status === ""){
-        params.status = -1
-      }
       minigameGameList(params).then(response => {
         this.list = response.data.list
         this.total = response.data.total
@@ -155,7 +162,13 @@ export default {
           this.listLoading = false
         }) 
     }, 
-
+    onCreate(row){
+      if (row) {
+        this.$router.push({name:'MinigameGameEdit',query: {id:row.id}})
+      }else{
+        this.$router.push({name:'MinigameGameEdit'})
+      }
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -181,7 +194,7 @@ export default {
         pageNum: 20,
         name: '',
         id:'',
-        status:"",     
+        status:1,     
         sort: '-id'
       }
       this.handleFilter()

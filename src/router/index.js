@@ -61,7 +61,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     name: 'Minigame',
-    meta: { title: '游戏信息', icon: 'el-icon-s-data' },
+    meta: { title: 'MINI小游戏', icon: 'el-icon-s-data' },
     children: [
       {
         path: '/minigame/user/list',
@@ -74,7 +74,14 @@ export const asyncRoutes = [
         name: 'MinigameGameList',
         component: () => import('@/views/minigame/common/game-list'),
         meta: { title: '游戏列表', icon: 'el-icon-s-data' ,noCache: true}
-      },       
+      },  
+      {
+        path: '/minigame/game/edit',
+        name: 'MinigameGameEdit',
+        hidden: true,
+        component: () => import('@/views/minigame/common/game-edit'),
+        meta: { title: '编辑游戏', icon: 'form' ,noCache: true}
+      },            
       {
         path: '/minigame/game/prop/list',
         name: 'MinigameGamePropList',
@@ -86,21 +93,55 @@ export const asyncRoutes = [
         name: 'MinigameGamePropEdit',
         hidden: true,
         component: () => import('@/views/minigame/common/game-prop-edit'),
-        meta: { title: '编辑道具', icon: 'form' ,noCache: true}
+        meta: { title: '编辑道具', icon: 'form' ,noCache: true , breadcrumb:false}
       },        
       {
         path: '/minigame/game/config/list',
         name: 'MinigameGameConfigList',
         component: () => import('@/views/minigame/common/game-config-list'),
         meta: { title: '游戏配置', icon: 'el-icon-setting' ,noCache: true}
-      },                            
+      },
+      {
+        path: '/minigame/game/config/edit',
+        name: 'MinigameGamePropEdit',
+        hidden: true,
+        component: () => import('@/views/minigame/common/game-config-edit'),
+        meta: { title: '编辑配置', icon: 'form' ,noCache: true }
+      },                                   
     ]
-  },  
+  },   
   {
-    path: '/minigame/log/game-log',
+    path: '/superHero',
     component: Layout,
     redirect: 'noRedirect',
-    name: 'Minigame',
+    name: 'SuperHero',
+    meta: { title: '超能游戏', icon: 'el-icon-setting' },
+    children: [
+      {
+        path: '/superHero/dragcard',
+        name: 'DragCardCon',
+        component: () => import('@/views/superHero/dragcard'),
+        meta: { title: '抽卡配置', icon: 'table' }
+      },
+      {
+        path: '/superHero/hangup',
+        name: 'HangupCon',
+        component: () => import('@/views/superHero/hangup'),
+        meta: { title: '挂机配置', icon: 'table' }
+      },
+      {
+        path: '/superHero/pve',
+        name: 'PveCon',
+        component: () => import('@/views/superHero/pve'),
+        meta: { title: 'PVE配置', icon: 'table' }
+      },           
+    ]
+  },
+  {
+    path: '/minigame/log',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'MinigameLog',
     meta: { title: '游戏日志', icon: 'el-icon-view' },
     children: [
       {
@@ -116,34 +157,7 @@ export const asyncRoutes = [
         meta: { title: '平台API日志', icon: 'el-icon-s-data' ,noCache: true}
       },            
     ]
-  },   
-  {
-    path: '/config',
-    component: Layout,
-    redirect: 'noRedirect',
-    name: 'Config',
-    meta: { title: '功能配置', icon: 'el-icon-setting' },
-    children: [
-      {
-        path: '/config/dragcard',
-        name: 'DragCardCon',
-        component: () => import('@/views/config/dragcard'),
-        meta: { title: '抽卡配置', icon: 'table' }
-      },
-      {
-        path: '/config/hangup',
-        name: 'HangupCon',
-        component: () => import('@/views/config/hangup'),
-        meta: { title: '挂机配置', icon: 'table' }
-      },
-      {
-        path: '/config/pve',
-        name: 'PveCon',
-        component: () => import('@/views/config/pve'),
-        meta: { title: 'PVE配置', icon: 'table' }
-      },           
-    ]
-  },
+  },    
   {
     path: '/account',
     component: Layout,

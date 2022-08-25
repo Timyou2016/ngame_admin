@@ -13,10 +13,10 @@
       <line-chart ref="refLineChartNewUser" :chart-data="lineChartData" />
     </el-row>
     <el-divider content-position="left"></el-divider>
-    <div slot="header" class="clearfix">
+    <div slot="header" class="clearfix"> 
       <span style="font-weight:bold;font-size:20px;">每日付费玩家(最近15天)</span>
     </div>     
-    <panel-group ref="refPanelGroupPayedUser" :list="payed_list" />
+    <panel-group ref="refPanelGroupPayedUser" :list="payed_list" @handleSetLineChartData="handleSetPayedLineChartData" />
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart ref="refLineChartPayedUser"  :chart-data="payed_lineChartData" />
     </el-row>
@@ -29,7 +29,7 @@ import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 
 import { minigameLastDaysNewUserCount } from '@/api/minigame/user'
-import { minigameSspLastDaysPayedCount } from '@/api/minigame/ssp'
+import { minigameStatsLastDaysPayedCount } from '@/api/minigame/stats'
 
 export default {
   name: 'DashboardAdmin',
@@ -60,12 +60,15 @@ export default {
   },
   created() {
     this.getList()
-    this.getSsp()
+    this.getStatsPayed()
   },    
   methods: {
     handleSetLineChartData(type) {
       this.lineChartData = this.list[type]
     },
+    handleSetPayedLineChartData(type) {
+      this.payed_lineChartData = this.payed_list[type]
+    },    
     getList(){
       minigameLastDaysNewUserCount({last_day:15}).then(response => {
         console.log(response)
@@ -79,11 +82,16 @@ export default {
           console.log(err)
       })         
     }, 
-    getSsp(){
-      minigameSspLastDaysPayedCount({last_day:15}).then(response => {
+    getStatsPayed(){
+      minigameStatsLastDaysPayedCount({last_day:15}).then(response => {
         console.log(response)
-        this.payed_list = {"101":response.data}
-        this.payed_lineChartData = this.payed_list["101"]
+        this.payed_list =  response.data
+        for (let index in this.payed_list) {
+            console.log("payed_list-index:",index)
+            this.payed_lineChartData = this.payed_list[index]
+            break
+        }
+        
         console.log(77777,this.payed_list)
         // Just to simulate the time of the request
         setTimeout(() => {
