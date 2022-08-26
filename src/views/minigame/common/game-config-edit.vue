@@ -71,7 +71,8 @@ export default {
       this.editform.id = this.$route.query.id
         minigameGetGameConfig({id:this.editform.id}).then(response => {
         this.editform= response.data
-        this.editform.config_value = JSON.parse(this.editform.config_value)
+        this.editform.config_value = JSON.parse(response.data.config_value)
+        console.log(121212,this.editform)  
         }).catch((err) => {
           console.log(err)
         })      
@@ -88,8 +89,8 @@ export default {
     onSubmit(){
         this.loading = true
           var params = {...this.editform}
-          console.log(params,this.editform)  
-          params.config_value = JSON.stringify(this.editform.config_value)      
+          params.config_value = JSON.parse(params.config_value)  
+          console.log(2222,params,this.editform)  
         minigameGameConfigEdit(params).then(response => {
             this.$message({
               type: 'success',

@@ -69,7 +69,9 @@ export function minigameGameConfigEdit(data) {
     return request({
         url: 'apiv1/minigame/common/edit-game-config',
         method: 'post',
-        data: qs.stringify(data,{indices:false}),     
+        headers:{"Content-Type":"application/json"},
+        data:data,
+        // data: qs.stringify(data,{indices:false}),     
     })
 }
 
