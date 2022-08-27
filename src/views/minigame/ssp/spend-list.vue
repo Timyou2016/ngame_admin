@@ -17,9 +17,6 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-s-open" @click="resetQuery">
         重置
       </el-button>      
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
-      </el-checkbox>
     </div>   
     <el-table
       :key="tableKey"
@@ -51,17 +48,12 @@
           {{ scope.row.nbox }}
         </template>
       </el-table-column>               
-       <el-table-column label="Busd" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.busd }}
-        </template>
-      </el-table-column> 
       <el-table-column label="获得日期" width="150" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.ymd }}</span>
         </template>
       </el-table-column>      
-      <el-table-column v-if="showReviewer" align="center" prop="create_time" label="获得时间" width="220">
+      <el-table-column align="center" prop="create_time" label="获得时间" width="220">
         <template slot-scope="scope">
           <span>{{ scope.row.create_time }}</span>
         </template>
@@ -86,7 +78,7 @@ export default {
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         pageNum: 20,
@@ -95,16 +87,9 @@ export default {
         ymd: '',
         sort: '-id'
       },
-      showReviewer: false,
     }
   },
-  created() {
-    this.init()
-  },
-  methods: {
-    async init(){
-        await this.getList()
-    },           
+  methods: {          
     getList() {
       this.listLoading = true
       minigameSspUserPlunder(this.listQuery).then(response => {

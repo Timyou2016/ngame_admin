@@ -8,7 +8,6 @@ export function gamesMap(status) {
             console.log(item)               
             gamesMap[item.id] = item.name
         })
-        console.log(1111,gamesMap)
     })     
     return gamesMap
 }

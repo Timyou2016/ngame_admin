@@ -5,35 +5,43 @@
 <script>
 import * as echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import * as resize from './mixins/resize'
-
+import * as resize from '@/components/mixins/resize'
 export default {
-  mixins: [resize],
+  name:"SingleLineChart",
+  mixins: [resize],  
   props: {
     className: {
       type: String,
       default: 'chart'
     },
+     Xname: {
+      type: String,
+      default: '日期'
+    }, 
+     Yname: {
+      type: String,
+      default: '数量'
+    },
+    serieName: {
+      type: String,
+      default: '数量'
+    },  
+    autoResize: {
+      type: Boolean,
+      default: true
+    },               
     width: {
       type: String,
       default: '100%'
-    },
+    },  
     height: {
       type: String,
       default: '350px'
     },
-    labelColor: {
+    colorVlaue: {
       type: String,
-      default: '#ee6666'
-    },
-    lineColor: {
-      type: String,
-      default: '#91cc75'
-    },        
-    autoResize: {
-      type: Boolean,
-      default: true
-    },
+      default: '#67C23A'
+    },  
     chartData: {
       type: Object,
       required: true,
@@ -69,57 +77,59 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ gameData, gameName } = {}) {
-      console.log("gameData",gameData)
-      console.log("gameName",gameName)
+    setOptions({ xData, yData } = {}) {
+      console.log("xData",xData)
+      console.log("yData",yData)
       this.chart.setOption({
         xAxis: {
           type:"category",
-          name:"注册日期",
-          data:gameData.dates
+          name:this.Xname,
+          nameLocation:"center",
+          nameTextStyle:{padding:5},
+          data:xData
         },
         yAxis: {
           type:"value",
-          name:"人数",          
+          name:this.Yname,          
         },
-        grid: {
-          left: 10,
+         grid: {
+          left: 20,
           right: 10,
           bottom: 20,
           top: 30,
           containLabel: true
-        },  
+        },
+        color:["#91cc75","#ee6666","#5470c6","#fac858","#73c0de","#9a60b4","#ea7ccc","#3ba272","#fc8452"], 
         tooltip: {
           trigger: 'axis',
           axisPointer: {
             type: 'cross'
           },
           padding: [5, 10]
-        },              
-        legend: {
-          data: [gameName]
-        },        
+        }, 
+        legend: {},                    
         series: [{
-          name:gameName,
+          name:this.serieName,
           itemStyle: {
             normal: {
               label: {
                 show: true, //开启显示数值
                 position: 'top', //数值在上方显示
                 textStyle: {  //数值样式
-                  color: this.labelColor,   //字体颜色
+                  color: '#F56C6C',   //字体颜色
                   fontSize: 14  //字体大小
                 }
               },
+              color: this.colorVlaue,
               lineStyle: {
-                color: this.lineColor,
-                width: 2
+                color: this.colorVlaue,
+                width:1
               }
             }
           },
           smooth: true,
-          type: 'line',
-          data: gameData.stats,
+          type: 'bar',
+          data: yData,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }]

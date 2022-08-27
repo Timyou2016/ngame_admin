@@ -48,3 +48,19 @@ export function minigameSspLastDaysPersonSpend(data) {
         data: qs.stringify(data,{indices:false}),     
     })
 }
+
+export function minigameSspStatPropsCount(data) {
+    return request({
+        url: 'apiv1/minigame/ssp/stat-props-count',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}
+
+export function minigameSspLastDaysPropsCount(data) {
+    return request({
+        url: 'apiv1/minigame/ssp/last-days-props-count',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}

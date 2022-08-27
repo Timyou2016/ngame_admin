@@ -2,11 +2,14 @@
   <div class="dashboard-editor-container">
     <div slot="header" class="clearfix">
       <span style="font-weight:bold;font-size:20px;">玩家总量</span>
+      <el-button class="filter-item" type="primary" style="float:right;margin-right:30%;"  @click="handleFilter(1)">
+        刷新
+      </el-button>      
     </div>    
-    <game-user-count />
+    <game-user-count ref="refGameUserCount"/>
     <el-divider content-position="left"></el-divider>
     <div slot="header" class="clearfix">
-      <span style="font-weight:bold;font-size:20px;">玩家每日新增(最近15天)</span>
+      <span style="font-weight:bold;font-size:20px;">新增玩家走势(最近<el-input-number v-model="lastDay" :step="7" @change="handleFilter" :min="7" :max="28" label="查询天数"></el-input-number>天)</span>
     </div>     
     <panel-group ref="refPanelGroupNewUser" :list="list" @handleSetLineChartData="handleSetLineChartData" />
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
@@ -14,11 +17,11 @@
     </el-row>
     <el-divider content-position="left"></el-divider>
     <div slot="header" class="clearfix"> 
-      <span style="font-weight:bold;font-size:20px;">每日付费玩家(最近15天)</span>
+      <span style="font-weight:bold;font-size:20px;">活跃玩家走势(最近<el-input-number v-model="lastDay" :step="7" @change="handleFilter" :min="7" :max="28" label="查询天数"></el-input-number>天)</span>
     </div>     
-    <panel-group ref="refPanelGroupPayedUser" :list="payed_list" @handleSetLineChartData="handleSetPayedLineChartData" />
+    <panel-group ref="refPanelGroupActiveUser" :list="active_list" @handleSetLineChartData="handleSetActiveLineChartData" />
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart ref="refLineChartPayedUser"  :chart-data="payed_lineChartData" />
+      <line-chart ref="refLineChartActiveUser"  :chart-data="active_lineChartData" />
     </el-row>
   </div>
 </template>
@@ -28,8 +31,7 @@ import GameUserCount from './components/GameUserCount'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 
-import { minigameLastDaysNewUserCount } from '@/api/minigame/user'
-import { minigameStatsLastDaysPayedCount } from '@/api/minigame/stats'
+import { minigameLastDaysNewUserCount,minigameLastDaysActiveUserCount } from '@/api/minigame/user'
 
 export default {
   name: 'DashboardAdmin',
@@ -48,33 +50,45 @@ export default {
         }
       },
       list:{},
-      payed_lineChartData: {
+      active_lineChartData: {
         gameName:"",
         gameData:{
           stats:[],
           dates:[],
         }
       },
-      payed_list:{},      
+      active_list:{}, 
+      lastDay:7     
     }
-  },
-  created() {
-    this.getList()
-    this.getStatsPayed()
-  },    
+  }, 
+  mounted() {
+    this.$nextTick(() => {
+      this.handleFilter()
+    })
+  },  
   methods: {
+    handleFilter(v){
+      this.getList()
+      this.getStatsActive()
+      this.$refs.refGameUserCount.getList()
+       if(v == 1){
+        this.$message({
+          message: '刷新完毕',
+          type: 'success'
+        });        
+      }     
+    },    
     handleSetLineChartData(type) {
       this.lineChartData = this.list[type]
     },
-    handleSetPayedLineChartData(type) {
-      this.payed_lineChartData = this.payed_list[type]
+    handleSetActiveLineChartData(type) {
+      this.active_lineChartData = this.active_list[type]
     },    
     getList(){
-      minigameLastDaysNewUserCount({last_day:15}).then(response => {
+      minigameLastDaysNewUserCount({last_day:this.lastDay}).then(response => {
         console.log(response)
         this.list = response.data
         this.lineChartData = this.list[0]
-        console.log(99999,this.list)
         // Just to simulate the time of the request
         setTimeout(() => {
         }, 1.5 * 1000)
@@ -82,17 +96,17 @@ export default {
           console.log(err)
       })         
     }, 
-    getStatsPayed(){
-      minigameStatsLastDaysPayedCount({last_day:15}).then(response => {
+    getStatsActive(){
+      minigameLastDaysActiveUserCount({last_day:this.lastDay}).then(response => {
         console.log(response)
-        this.payed_list =  response.data
-        for (let index in this.payed_list) {
-            console.log("payed_list-index:",index)
-            this.payed_lineChartData = this.payed_list[index]
+        this.active_list =  response.data
+        for (let index in this.active_list) {
+            console.log("active_list-index:",index)
+            this.active_lineChartData = this.active_list[index]
             break
         }
         
-        console.log(77777,this.payed_list)
+        console.log(77777,this.active_list)
         // Just to simulate the time of the request
         setTimeout(() => {
         }, 1.5 * 1000)

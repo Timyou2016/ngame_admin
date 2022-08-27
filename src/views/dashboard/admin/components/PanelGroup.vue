@@ -32,7 +32,6 @@ export default {
   },  
   methods: {
     handleSetLineChartData(type) {
-      console.log(8888888,type,this.list)
       this.$emit('handleSetLineChartData', type)
     }
   }

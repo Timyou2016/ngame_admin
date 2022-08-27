@@ -1,169 +1,181 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container" style="margin-bottom:10px;">
-      <el-input v-model="listQuery.uid" placeholder="平台UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.game_uid" placeholder="游戏ID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-date-picker style="margin-right:10px;"
-      <el-date-picker style="margin-right:10px;"
-      v-model="listQuery.ymd"
-      type="date"
-      format="yyyyMMdd"
-      value-format="yyyyMMdd"
-      placeholder="获得日期">
-      </el-date-picker>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
+  <div class="dashboard-editor-container">
+    <div slot="header" class="clearfix" v-loading="listLoading">
+      <span style="font-weight:bold;font-size:20px;margin-right:50px;">总付费数据</span>
+      <el-button v-waves class="filter-item" type="primary" style="float:right;margin-right:30%;"  @click="loadData(1)">
+        刷新
       </el-button>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-s-open" @click="resetQuery">
-        重置
-      </el-button>      
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
-      </el-checkbox>
-    </div>   
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange"
-    >
-      <el-table-column label="掠夺ID" prop="id" sortable="sspRewardTable" align="center" width="120" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>  
-      <el-table-column label="平台UID" width="150" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.uid }}</span>
-        </template>
-      </el-table-column>  
-       <el-table-column label="游戏ID" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.game_uid }}
-        </template>
-      </el-table-column>   
-       <el-table-column label="Nbox" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.nbox }}
-        </template>
-      </el-table-column>               
-       <el-table-column label="Busd" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.busd }}
-        </template>
-      </el-table-column> 
-      <el-table-column label="获得日期" width="150" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.ymd }}</span>
-        </template>
-      </el-table-column>      
-      <el-table-column v-if="showReviewer" align="center" prop="create_time" label="获得时间" width="220">
-        <template slot-scope="scope">
-          <span>{{ scope.row.create_time }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageNum" @pagination="getList" />
+    </div> 
+    <total-person-spend ref="refTotalPersonSpend" /> 
+    <el-row :gutter="20" class="panel-group" style="margin-top:5px;">
+      <el-col :xs="12" :sm="12" :lg="24" class="card-panel-col">
+        <cake :chartData="cakeData" :height="cakeheight" :title_sub="showPropTitle" ref="refTotalPropsCount" />  
+      </el-col> 
+    </el-row>     
+    <el-divider content-position="left"></el-divider>
+    <div slot="header" class="clearfix">
+      <span style="font-weight:bold;font-size:20px;">付费数据走势(最近<el-input-number v-model="lastDay" :step="7" @change="handleFilter" :min="7" :max="28" label="查询天数"></el-input-number>日)</span>
+    </div>     
+    <el-row :gutter="20">
+      <el-col :xs="12" :sm="12" :lg="12" class="card-panel-col">
+        <single-line-chart :className="personChart"  :Yname="personYname" :chartData="personData" ref="refPersonLineChart" :serieName="personYname" />
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="12" class="card-panel-col">
+        <single-line-chart :className="spendChart" :colorVlaue="colorVlaue" :Yname="spendYname" :chartData="spendData" ref="refSpendLineChart" :serieName="spendYname" />
+      </el-col>      
+    </el-row>        
+
+     <div slot="header" class="clearfix" style="margin-bottom:20px;">
+      <span style="font-weight:bold;font-size:20px;"></span>
+    </div> 
+    <el-row :gutter="20" class="panel-group">
+      <el-col :xs="12" :sm="12" :lg="24" class="card-panel-col">
+        <more-line-chart :chartData="moreLineChartData" ref="refLastDaysPropsCount" />  
+      </el-col>             
+    </el-row>    
   </div>
 </template>
 
 <script>
-import { minigameSspTotalPersonSpend,minigameSspLastDaysPersonSpend } from '@/api/minigame/ssp'
+import { minigameSspStatPropsCount,minigameSspLastDaysPropsCount,minigameSspLastDaysPersonSpend } from '@/api/minigame/ssp'
+import TotalPersonSpend from './total-person-spend'
+import Cake from '@/components/Cake'
+import MoreLineChart from '@/components/MoreLineChart'
+import CountTo from 'vue-count-to'
+import SingleLineChart from '@/components/SingleLineChart'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'MinigameSspStats',
-  components: { Pagination },
   directives: { waves },
-  filters: {   
+  components: {
+    TotalPersonSpend,
+    Cake,
+    MoreLineChart,
+    CountTo,
+    SingleLineChart
   },
   data() {
     return {
-      tableKey: 0,
-      list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        pageNum: 20,
-        uid: "",
-        game_uid: '',
-        ymd: '',
-        sort: '-id'
+      listLoading: false,
+      lastDay:7,
+      cakeheight: "300px",
+      showPropTitle: "",
+      cakeData:{showData:[]},
+      moreLineChartData:{xData:[],yData:[]},
+      colorVlaue:"#409EFF",  
+      personChart:"personChart",
+      spendChart:"spendChart",
+      personYname:"付费人数",
+      spendYname:"Nbox",
+      personData:{
+        xData:[],
+        yData:[],
       },
-      showReviewer: false,
+      spendData:{
+         xData:[],
+         yData:[],       
+      },      
+      lastDaysPersonSpend:{
+        gameData:{
+          total_person:0,
+          total_spend:0,
+          person_data:[],
+          spend_data:[],
+          dates:[],
+        }
+      }      
     }
-  },
-  created() {
-    this.init()
-  },
+  },     
   methods: {
-    async init(){
-        await this.getList()
-    },           
-    getList() {
+     async loadData(v){
       this.listLoading = true
-      minigameSspTotalPersonSpend({}).then(response => {
+      await this.$refs.refTotalPersonSpend.getSspTotalPersonSpend()
+      this.getSspLastDaysPersonSpend()
+      this.getStatPropsCount()
+      this.getLastDaysPropsCount()
+      this.listLoading = false
+      if(v == 1){
+        this.$message({
+          message: '刷新完毕',
+          type: 'success'
+        });        
+      }
+    }, 
+    handleFilter(){
+      this.getSspLastDaysPersonSpend()
+      this.getLastDaysPropsCount()
+    },
+    getStatPropsCount() {
+      minigameSspStatPropsCount({}).then(response => {
+        /*
+        this.cakeData.showData = response.data.map(item=>{
+          return {
+            name:item.prop_id,
+            value:item.num
+          }
+        })*/
+        this.cakeData.showData = response.data
         // Just to simulate the time of the request
-        console.log("minigameSspTotalPersonSpend",response.data)
         setTimeout(() => {
-          this.listLoading = false
         }, 1.5 * 1000)
       }).catch((err) => {
           console.log(err)
-          this.listLoading = false
       }) 
-      minigameSspLastDaysPersonSpend({last_day:15}).then(response => {
+    },
+    getLastDaysPropsCount() {
+      minigameSspLastDaysPropsCount({last_day:this.lastDay}).then(response => {
+        this.moreLineChartData.xData = response.data.dates
+        this.moreLineChartData.yData = response.data.data
         // Just to simulate the time of the request
+        setTimeout(() => {
+        }, 1.5 * 1000)
+      }).catch((err) => {
+          console.log(err)
+      }) 
+    }, 
+    getSspLastDaysPersonSpend(){
+      minigameSspLastDaysPersonSpend({last_day:this.lastDay}).then(response => {
+        // Just to simulate the time of the request
+        this.lastDaysPersonSpend = response.data
+        this.personData.xData = this.lastDaysPersonSpend.gameData.dates
+        this.personData.yData = this.lastDaysPersonSpend.gameData.person_data
+        this.spendData.xData = this.lastDaysPersonSpend.gameData.dates
+        this.spendData.yData = this.lastDaysPersonSpend.gameData.spend_data
         console.log("minigameSspLastDaysPersonSpend",response.data)
         setTimeout(() => {
-          this.listLoading = false
         }, 1.5 * 1000)
       }).catch((err) => {
           console.log(err)
-          this.listLoading = false
-      })       
-    }, 
-    
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
-    resetQuery() {
-      this.listQuery = {
-        page: 1,
-        pageNum: 20,
-        uid: "",
-        game_uid: '',
-        ymd: '',
-        sort: '-id'
-      }
-      this.handleFilter()
-    },
-
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
+      })        
+    },                          
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.dashboard-editor-container {
+  padding: 32px;
+  background-color: rgb(240, 242, 245);
+  position: relative;
+
+  .github-corner {
+    position: absolute;
+    top: 0px;
+    border: 0;
+    right: 0;
+  }
+
+  .chart-wrapper {
+    background: #fff;
+    padding: 16px 16px 0;
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width:1024px) {
+  .chart-wrapper {
+    padding: 8px;
+  }
+}
+
+</style>

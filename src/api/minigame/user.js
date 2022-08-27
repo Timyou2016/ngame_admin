@@ -23,3 +23,11 @@ export function minigameLastDaysNewUserCount(data) {
         data: qs.stringify(data,{indices:false}),     
     })
 }
+
+export function minigameLastDaysActiveUserCount(data) {
+    return request({
+        url: 'apiv1/minigame/user/last-days-active-user-count',
+        method: 'post',
+        data: qs.stringify(data,{indices:false}),     
+    })
+}

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container" style="margin-bottom:10px;">
     <el-input v-model="listQuery.uid" placeholder="平台UID" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.api_path" placeholder="请求路径" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
+    <el-input v-model="listQuery.api_path" placeholder="请求路径" style="width: 150px;margin-right:10px;" class="filter-item" @keyup.enter.native="handleFilter" />
     <el-date-picker style="margin-right:10px;"
       v-model="listQuery.ymd"
       type="date"

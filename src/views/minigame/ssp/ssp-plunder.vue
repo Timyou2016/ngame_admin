@@ -4,7 +4,7 @@
     <el-tab-pane label="攻击花费" name="first"><minigame-ssp-spend-list ref="refSspSpend" /> </el-tab-pane>
     <el-tab-pane label="道具奖励" name="second"><minigame-ssp-reward-list ref="refSspReward" /></el-tab-pane>
     <el-tab-pane label="攻击日志" name="third"><minigame-ssp-plunder-log ref="refSspPlunderLog" /></el-tab-pane>
-    <el-tab-pane label="统计数据" name="four"><minigame-ssp-stats ref="refSspStats" /></el-tab-pane>
+    <el-tab-pane label="数据图表" name="four"><minigame-ssp-stats ref="refSspStats" /></el-tab-pane>
   </el-tabs>
   </div>
 </template>
@@ -18,13 +18,16 @@ import MinigameSspStats from '@/views/minigame/ssp/stats'
     components: { MinigameSspRewardList ,MinigameSspSpendList,MinigameSspPlunderLog,MinigameSspStats},
     data() {
       return {
-        activeName: 'first'
+        activeName: 'four'
       };
     },
+    mounted() {
+      this.$nextTick(() => {
+        this.init();
+      })
+    },       
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
-        console.log(this.activeName)
+      init(){
         if (this.activeName == "first"){
             this.$refs.refSspSpend.handleFilter();
         }
@@ -33,7 +36,15 @@ import MinigameSspStats from '@/views/minigame/ssp/stats'
         }
         if (this.activeName == "third"){
             this.$refs.refSspPlunderLog.handleFilter();
-        }                
+        } 
+        if (this.activeName == "four"){
+            this.$refs.refSspStats.loadData();
+        } 
+      },
+      handleClick(tab, event) {
+        console.log(tab, event);
+        console.log(this.activeName);
+        this.init();             
       }
     }
   };
